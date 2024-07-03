@@ -23,6 +23,6 @@ Gunakan informasi berikut untuk menghubungkan aplikasi ke database:
 - **Port number**: `3306`
 
 ## Catatan Penting
-- Hapus File classifier.xml: Setiap kali menggunakan aplikasi, harap hapus file classifier.xml dan backup file ini jika diperlukan.
+- Hapus File `classifier.xml` : Setiap kali menggunakan aplikasi, harap hapus file `classifier.xml` dan backup file ini jika diperlukan.
 - Hapus Foto di Direktori Dataset: Hapus foto-foto di direktori dataset setelah selesai penggunaan.
 - jika database lemot bisa menggunakan local
