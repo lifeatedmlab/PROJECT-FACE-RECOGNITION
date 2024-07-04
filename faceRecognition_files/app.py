@@ -21,6 +21,11 @@ def home():
 def login():
     return login_user(request, render_template, flash, redirect, url_for)
 
+@app.route('/data_anggota', methods = ['GET', 'POST'])
+def data_anggota():
+        return render_template('data_anggota.html')
+
+
 @app.route('/addprsn')
 def addprsn():
     nbr = get_next_person_number()
