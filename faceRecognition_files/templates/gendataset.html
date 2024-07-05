@@ -10,16 +10,16 @@
 <section class="py-1">
     <div class="row mt-5">
         <div class="col-md-3 offset-lg-2">
-            <h3>Generate Dataset {{ prs }}</h3>
+            <h3>Generate Dataset {{ kodeAnggota }}</h3>
             <hr>
-            <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" width="100%" class="img-thumbnail">
+            <img src="{{ url_for('vidfeed_dataset', kodeAnggota=kodeAnggota) }}" width="100%" class="img-thumbnail">
         </div>
     </div>
 
     <br>
     <div class="row">
         <div class="col-md-3 offset-lg-2">
-            <a class="btn btn-warning btn-lg" href="{{ url_for('train_classifier_route', nbr=prs) }}"> Training </a>
+            <a class="btn btn-warning btn-lg" href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"> Training </a>
         </div>
     </div>
 </section>

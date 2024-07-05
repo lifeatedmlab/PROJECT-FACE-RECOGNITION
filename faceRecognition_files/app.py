@@ -3,7 +3,7 @@ from database import mydb, mycursor
 from dataset import generate_dataset
 from face_recognition import face_recognition
 from login import login_user
-from addperson import get_next_person_number, add_person
+from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
 import os
 
@@ -12,7 +12,7 @@ app.secret_key = os.urandom(24)
 
 @app.route('/')
 def home():
-    mycursor.execute("select prs_nbr, prs_name, prs_skill, prs_active, prs_added from prs_mstr")
+    mycursor.execute("SELECT kodeAnggota, nama, nim, gen FROM usermstr")
     data = mycursor.fetchall()
 
     return render_template('index.html', data=data)
@@ -21,31 +21,43 @@ def home():
 def login():
     return login_user(request, render_template, flash, redirect, url_for)
 
-@app.route('/data_anggota', methods = ['GET', 'POST'])
+@app.route('/data_anggota', methods=['GET', 'POST'])
 def data_anggota():
-        return render_template('data_anggota.html')
-
+    return render_template('data_anggota.html')
 
 @app.route('/addprsn')
 def addprsn():
-    nbr = get_next_person_number()
-    return render_template('addprsn.html', newnbr=int(nbr))
+    return render_template('addprsn.html')
 
 @app.route('/addprsn_submit', methods=['POST'])
 def addprsn_submit():
-    prsnbr = request.form.get('txtnbr')
-    prsname = request.form.get('txtname')
-    prsskill = request.form.get('optskill')
-    add_person(prsnbr, prsname, prsskill)
-    return redirect(url_for('vfdataset_page', prs=prsnbr))
+    kodeAnggota = request.form.get('txtkdag')
+    nama = request.form.get('txtnama')
+    nim = 0
+    gen = request.form.get('optgen')
+    
+    if not kodeAnggota:
+        flash('Kode Anggota tidak boleh kosong', 'error')
+        return redirect(url_for('addprsn'))
+    
+    if not nama:
+        flash('Nama tidak boleh kosong', 'error')
+        return redirect(url_for('addprsn'))
+    
+    if kodeAnggota_exists(kodeAnggota):
+        flash(f'Kode Anggota {kodeAnggota} sudah ada. Silakan gunakan kode yang lain.', 'error')
+        return redirect(url_for('addprsn'))
 
-@app.route('/vfdataset_page/<prs>')
-def vfdataset_page(prs):
-    return render_template('gendataset.html', prs=prs)
+    add_person(kodeAnggota, nama, nim, gen)
+    return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota))
 
-@app.route('/vidfeed_dataset/<nbr>')
-def vidfeed_dataset(nbr):
-    return Response(generate_dataset(nbr), mimetype='multipart/x-mixed-replace; boundary=frame')
+@app.route('/vfdataset_page/<kodeAnggota>')
+def vfdataset_page(kodeAnggota):
+    return render_template('gendataset.html', kodeAnggota=kodeAnggota)
+
+@app.route('/vidfeed_dataset/<kodeAnggota>')
+def vidfeed_dataset(kodeAnggota):
+    return Response(generate_dataset(kodeAnggota), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed')
 def video_feed():
@@ -55,9 +67,9 @@ def video_feed():
 def fr_page():
     return render_template('fr_page.html')
 
-@app.route('/train_classifier/<nbr>')
-def train_classifier_route(nbr):
-    return train_classifier(nbr)
+@app.route('/train_classifier/<kodeAnggota>')
+def train_classifier_route(kodeAnggota):
+    return train_classifier(kodeAnggota)
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
