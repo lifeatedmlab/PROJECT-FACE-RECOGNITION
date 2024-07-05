@@ -5,7 +5,6 @@ import cv2
 from flask import redirect, flash, url_for
 import boto3
 
-# Initialize S3 client
 s3 = boto3.client('s3',
                   endpoint_url='https://a1c30d551c1d5963fc6afe44c3a6777c.r2.cloudflarestorage.com',
                   region_name='apac',
@@ -52,10 +51,8 @@ def train_classifier(kodeAnggota):
     classifier_file = os.path.join(current_dir, "faceRecognition_files", f"classifier_{kodeAnggota}.xml")
     clf.write(classifier_file)
 
-    # Upload the classifier to Cloudflare
     upload_to_s3(classifier_file, 'imgdataset', f"classifiers/classifier_{kodeAnggota}.xml")
 
-    # Delete all files in the dataset directory after training
     for file in os.listdir(dataset_dir):
         os.remove(os.path.join(dataset_dir, file))
 

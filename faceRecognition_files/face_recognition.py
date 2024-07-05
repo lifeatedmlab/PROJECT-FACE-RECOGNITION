@@ -5,7 +5,6 @@ from database import mycursor
 import os
 import boto3
 
-# Initialize S3 client
 s3 = boto3.client('s3',
                   endpoint_url='https://a1c30d551c1d5963fc6afe44c3a6777c.r2.cloudflarestorage.com',
                   region_name='apac',

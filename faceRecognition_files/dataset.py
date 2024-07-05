@@ -2,7 +2,6 @@ import cv2
 import os
 from database import mydb, mycursor
 
-# Dapatkan jalur direktori saat ini
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 dataset_dir = os.path.join(current_dir, "faceRecognition_files", "dataset")
