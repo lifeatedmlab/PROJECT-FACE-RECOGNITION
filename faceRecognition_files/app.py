@@ -31,7 +31,7 @@ def addprsn():
 
 @app.route('/addprsn_submit', methods=['POST'])
 def addprsn_submit():
-    kodeAnggota = request.form.get('txtkdag')
+    kodeAnggota = request.form.get('txtkdag').upper()
     nama = request.form.get('txtnama')
     nim = request.form.get('txtnim')
     gen = request.form.get('optgen')
