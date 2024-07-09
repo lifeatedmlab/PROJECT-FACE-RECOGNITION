@@ -33,7 +33,7 @@ def addprsn():
 def addprsn_submit():
     kodeAnggota = request.form.get('txtkdag')
     nama = request.form.get('txtnama')
-    nim = 0
+    nim = request.form.get('txtnim')
     gen = request.form.get('optgen')
     
     if not kodeAnggota:
@@ -42,6 +42,10 @@ def addprsn_submit():
     
     if not nama:
         flash('Nama tidak boleh kosong', 'error')
+        return redirect(url_for('addprsn'))
+    
+    if not nim:
+        flash('NIM tidak boleh kosong', 'error')
         return redirect(url_for('addprsn'))
     
     if kodeAnggota_exists(kodeAnggota):
