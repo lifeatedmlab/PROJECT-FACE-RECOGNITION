@@ -95,14 +95,13 @@
             <!--Button Training-->
             <div class="row d-flex justify-content-center">
               <div class="col-md-3 mb-5 mt-1 pt-3">
-                <button
+                <a
                   class="btn btn-warning btn-lg"
                   style="background-color: #ff6e5a; color: white"
                   href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
-                  data-target="#notificationModal"
                 >
                   Submit
-                </button>
+              </a>
               </div>
             </div>
           </div>
@@ -111,7 +110,7 @@
       <br />
     </section>
     <!--Modal ABAIKAN-->
-    <div class="modal" tabindex="-1" id="notificationModal">
+    <!-- <div class="modal" tabindex="-1" id="notificationModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -131,4 +130,4 @@
       </div>
     </div>
   </body>
-</html>
+</html> -->

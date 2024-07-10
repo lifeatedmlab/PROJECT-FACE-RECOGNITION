@@ -32,12 +32,16 @@ def addprsn():
 @app.route('/addprsn_submit', methods=['POST'])
 def addprsn_submit():
     kodeAnggota = request.form.get('txtkdag').upper()
-    nama = request.form.get('txtnama').title()
+    nama = request.form.get('txtnama')
     nim = request.form.get('txtnim')
     gen = request.form.get('optgen')
     
     if not kodeAnggota:
         flash('Kode Anggota tidak boleh kosong', 'error')
+        return redirect(url_for('addprsn'))
+    
+    if len(kodeAnggota) != 4 :
+        flash('Kode Anggota tidak valid', 'error')
         return redirect(url_for('addprsn'))
     
     if not nama:
@@ -47,6 +51,13 @@ def addprsn_submit():
     if not nim:
         flash('NIM tidak boleh kosong', 'error')
         return redirect(url_for('addprsn'))
+    
+    try:
+        nim = int(nim)
+    except ValueError:
+        flash('NIM harus berupa angka', 'error')
+        return redirect(url_for('addprsn'))
+
     
     if kodeAnggota_exists(kodeAnggota):
         flash(f'Kode Anggota {kodeAnggota} sudah ada. Silakan gunakan kode yang lain.', 'error')
