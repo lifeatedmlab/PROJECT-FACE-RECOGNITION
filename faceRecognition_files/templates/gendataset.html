@@ -1,28 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     {% include "head.html" %}
-</head>
-<body>
+    <style>
+      .center-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Adjust as needed */
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body style="background-color: #f4f6fc">
+    {% include "navbar.html" %}
 
-{% include "navbar.html" %}
-
-<section class="py-1">
-    <div class="row mt-5">
-        <div class="col-md-3 offset-lg-2">
-            <h3>Generate Dataset {{ kodeAnggota }}</h3>
-            <hr>
-            <img src="{{ url_for('vidfeed_dataset', kodeAnggota=kodeAnggota) }}" width="100%" class="img-thumbnail">
+    <section class="py-1">
+      <h3
+        style="
+          text-align: center;
+          color: #200463;
+          margin: 20px 0;
+          padding: 10px;
+        "
+      >
+        Pendaftaran Wajah {{ kodeAnggota }}
+      </h3>
+      <div class="container text-center">
+        <div class="row">
+          <!--Record Wajah-->
+          <div class="col-md-6">
+            <img
+              src="{{ url_for('vidfeed_dataset', kodeAnggota=kodeAnggota) }}"
+              width="100%"
+              class="img-thumbnail"
+              style="border-color: #200463"
+            />
+          </div>
+          <!--Data diri-->
+          <div class="card col-md-6 pt-3">
+            <form>
+              <div class="text-left mb-3">
+                <label for="exampleInputEmail1" class="form-label">Nama</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ nama }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                />
+              </div>
+              <div class="text-left mb-3">
+                <label for="exampleInputEmail1" class="form-label">NIM</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ nim }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                />
+              </div>
+              <div class="text-left mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                  >Generation</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ GEN }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                />
+              </div>
+              <div class="text-left mb-3">
+                <label
+                  for="exampleInputEmail1"
+                  class="form-label"
+                  style="text-align: left"
+                  >Kode Anggota</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ kodeAnggota }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                />
+              </div>
+            </form>
+            <!--Button Training-->
+            <div class="row d-flex justify-content-center">
+              <div class="col-md-3 mb-5 mt-1 pt-3">
+                <button
+                  class="btn btn-warning btn-lg"
+                  style="background-color: #ff6e5a; color: white"
+                  href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
+                  data-target="#notificationModal"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-
-    <br>
-    <div class="row">
-        <div class="col-md-3 offset-lg-2">
-            <a class="btn btn-warning btn-lg" href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"> Training </a>
+      </div>
+      <br />
+    </section>
+    <!--Modal ABAIKAN-->
+    <div class="modal" tabindex="-1" id="notificationModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Submit Berhasil!</h5>
+            <p>Wajah berhasil terekam</p>
+            <a
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></a>
+          </div>
+          <div class="modal-body">
+            <p>Modal body text goes here.</p>
+          </div>
         </div>
+      </div>
     </div>
-</section>
-
-</body>
+  </body>
 </html>

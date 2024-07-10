@@ -1,66 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     {% include "head.html" %}
-</head>
-<body>
+  </head>
+  <body>
+    {% include "navbar.html" %}
 
-{% include "navbar.html" %}
-
-<section class="py-1">
-    <div class="row mt-5">
+    <section class="py-1">
+      <div class="row mt-5">
         <div class="col-lg-8 offset-lg-2">
-            <h3>Add Personnel</h3>
-            <hr>
-            <form class="form" method="post" action="/addprsn_submit">
-                <div class="form-group row">
-                    <label for="txtkdag" class="col-sm-2 col-form-label">Kode Anggota</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" id="txtkdag" name="txtkdag" required>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="txtnama" class="col-sm-2 col-form-label">Nama</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="txtnama" name="txtnama" required>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="txtnim" class="col-sm-2 col-form-label">NIM</label>
-                    <div class="col-sm-8">
-                        <input type="int" class="form-control" id="txtnim" name="txtnim" required>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="optgen" class="col-sm-2 col-form-label">GEN</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" name="optgen" id="optgen">
-                            <option value="4">G4</option>
-                            <option value="5">G5</option>
-                            <option value="6">G6</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label"></label>
-                    <div class="col-sm-8">
-                        <input type="submit" class="btn btn-primary btn-lg" value="Next">
-                        <a href="/" type="button" class="btn btn-warning btn-lg"><b>Back</b></a>
-                    </div>
-                </div>
-            </form>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div class="alert alert-warning" role="alert">
-                {% for category, message in messages %}
-                <p class="{{ category }}">{{ message }}</p>
-                {% endfor %}
+          <h3>Add Personnel</h3>
+          <hr />
+          <form class="form" method="post" action="/addprsn_submit">
+            <div class="form-group row">
+              <label for="txtkdag" class="col-sm-2 col-form-label"
+                >Kode Anggota</label
+              >
+              <div class="col-sm-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="txtkdag"
+                  name="txtkdag"
+                  required
+                />
+              </div>
             </div>
-            {% endif %}
-            {% endwith %}
+            <div class="form-group row">
+              <label for="txtnama" class="col-sm-2 col-form-label">Nama</label>
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="txtnama"
+                  name="txtnama"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="txtnim" class="col-sm-2 col-form-label">NIM</label>
+              <div class="col-sm-8">
+                <input
+                  type="int"
+                  class="form-control"
+                  id="txtnim"
+                  name="txtnim"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="optgen" class="col-sm-2 col-form-label">GEN</label>
+              <div class="col-sm-4">
+                <select class="form-control" name="optgen" id="optgen">
+                  <option value="4">G4</option>
+                  <option value="5">G5</option>
+                  <option value="6">G6</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label"></label>
+              <div class="col-sm-8">
+                <input
+                  type="submit"
+                  class="btn btn-primary btn-lg"
+                  value="Next"
+                />
+                <a href="/" type="button" class="btn btn-warning btn-lg"
+                  ><b>Back</b></a
+                >
+              </div>
+            </div>
+          </form>
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %}
+          <div class="alert alert-warning" role="alert">
+            {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+          </div>
+          {% endif %} {% endwith %}
         </div>
-    </div>
-</section>
-
-</body>
+      </div>
+    </section>
+  </body>
 </html>
