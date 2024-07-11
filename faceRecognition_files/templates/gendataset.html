@@ -38,7 +38,9 @@
             />
           </div>
           <!--Data diri-->
-          <div class="card col-md-6 pt-3">
+          <div
+            class="card col-md-6 pt-3 margin:0 auto; width: 570px; height: 468px;"
+          >
             <form>
               <div class="text-left mb-3">
                 <label for="exampleInputEmail1" class="form-label">Nama</label>
@@ -49,6 +51,7 @@
                   aria-describedby="emailHelp"
                   value="{{ nama }}"
                   style="border-color: #200463; background-color: #f3f3f3"
+                  readonly
                 />
               </div>
               <div class="text-left mb-3">
@@ -60,6 +63,7 @@
                   aria-describedby="emailHelp"
                   value="{{ nim }}"
                   style="border-color: #200463; background-color: #f3f3f3"
+                  readonly
                 />
               </div>
               <div class="text-left mb-3">
@@ -71,8 +75,9 @@
                   class="form-control"
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
-                  value="{{ GEN }}"
+                  value="{{ gen }}"
                   style="border-color: #200463; background-color: #f3f3f3"
+                  disabled
                 />
               </div>
               <div class="text-left mb-3">
@@ -89,6 +94,7 @@
                   aria-describedby="emailHelp"
                   value="{{ kodeAnggota }}"
                   style="border-color: #200463; background-color: #f3f3f3"
+                  readonly
                 />
               </div>
             </form>
@@ -96,12 +102,16 @@
             <div class="row d-flex justify-content-center">
               <div class="col-md-3 mb-5 mt-1 pt-3">
                 <a
-                  class="btn btn-warning btn-lg"
-                  style="background-color: #ff6e5a; color: white"
+                  class="btn"
+                  style="
+                    background-color: #ff6e5a;
+                    color: white;
+                    font-weight: bold;
+                  "
                   href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
                 >
                   Submit
-              </a>
+                </a>
               </div>
             </div>
           </div>
@@ -109,25 +119,5 @@
       </div>
       <br />
     </section>
-    <!--Modal ABAIKAN-->
-    <!-- <div class="modal" tabindex="-1" id="notificationModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Submit Berhasil!</h5>
-            <p>Wajah berhasil terekam</p>
-            <a
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></a>
-          </div>
-          <div class="modal-body">
-            <p>Modal body text goes here.</p>
-          </div>
-        </div>
-      </div>
-    </div>
   </body>
-</html> -->
+</html>

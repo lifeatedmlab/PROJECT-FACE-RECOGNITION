@@ -6,9 +6,15 @@ from login import login_user
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
 import os
+from enum import Enum
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+
+class Generation(Enum):
+    GEN4 = '4'
+    GEN5 = '5'
+    GEN6 = '6'
 
 @app.route('/')
 def home():
@@ -27,12 +33,12 @@ def data_anggota():
 
 @app.route('/addprsn')
 def addprsn():
-    return render_template('addprsn.html')
+    return render_template('addprsn.html', generations=Generation)
 
 @app.route('/addprsn_submit', methods=['POST'])
 def addprsn_submit():
     kodeAnggota = request.form.get('txtkdag').upper()
-    nama = request.form.get('txtnama')
+    nama = request.form.get('txtnama').title()
     nim = request.form.get('txtnim')
     gen = request.form.get('optgen')
     
@@ -64,11 +70,14 @@ def addprsn_submit():
         return redirect(url_for('addprsn'))
 
     add_person(kodeAnggota, nama, nim, gen)
-    return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota))
+    return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
 
 @app.route('/vfdataset_page/<kodeAnggota>')
 def vfdataset_page(kodeAnggota):
-    return render_template('gendataset.html', kodeAnggota=kodeAnggota)
+    nama = request.args.get('nama')
+    nim = request.args.get('nim')
+    gen = request.args.get('gen')
+    return render_template('gendataset.html', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen)
 
 @app.route('/vidfeed_dataset/<kodeAnggota>')
 def vidfeed_dataset(kodeAnggota):
