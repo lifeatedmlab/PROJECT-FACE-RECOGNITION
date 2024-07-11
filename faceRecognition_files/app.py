@@ -5,6 +5,7 @@ from face_recognition import face_recognition
 from login import login_user
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
+from addevent import get_event, add_event
 import os
 from enum import Enum
 
@@ -94,6 +95,32 @@ def fr_page():
 @app.route('/train_classifier/<kodeAnggota>')
 def train_classifier_route(kodeAnggota):
     return train_classifier(kodeAnggota)
+
+@app.route('/data_event')
+def data_event():
+    events = get_event()
+    return render_template('event.html', events=events)
+
+@app.route('/regist_event', methods=['POST'])
+def regist_event():
+    kodeAcara = request.form.get('kode-event')
+    namaEvent = request.form.get('nama-event')
+    waktuAcara = request.form.get('tanggal')
+    
+    if not kodeAcara:
+        flash('Kode Acara tidak boleh kosong', 'error')
+        return redirect(url_for('data_event'))
+    
+    if not namaEvent:
+        flash('Nama Event tidak boleh kosong', 'error')
+        return redirect(url_for('data_event'))
+    
+    if not waktuAcara:
+        flash('Waktu Acara tidak boleh kosong', 'error')
+        return redirect(url_for('data_event'))
+    
+    add_event(kodeAcara, namaEvent, waktuAcara)
+    return redirect(url_for('event_register.html', kodeAcara=kodeAcara))
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
