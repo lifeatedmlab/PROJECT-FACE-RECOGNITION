@@ -1,28 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     {% include "head.html" %}
-</head>
-<body>
+    <style>
+      .center-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Adjust as needed */
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body style="background-color: #f4f6fc">
+    {% include "navbar.html" %}
 
-{% include "navbar.html" %}
-
-<section class="py-1">
-    <div class="row mt-5">
-        <div class="col-md-3 offset-lg-2">
-            <h3>Generate Dataset {{ prs }}</h3>
-            <hr>
-            <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" width="100%" class="img-thumbnail">
+    <section class="py-1">
+      <h3
+        style="
+          text-align: center;
+          color: #200463;
+          margin: 20px 0;
+          padding: 10px;
+        "
+      >
+        Pendaftaran Wajah {{ kodeAnggota }}
+      </h3>
+      <div class="container text-center">
+        <div class="row">
+          <!--Record Wajah-->
+          <div class="col-md-6">
+            <img
+              src="{{ url_for('vidfeed_dataset', kodeAnggota=kodeAnggota) }}"
+              width="100%"
+              class="img-thumbnail"
+              style="border-color: #200463"
+            />
+          </div>
+          <!--Data diri-->
+          <div
+            class="card col-md-6 pt-3 margin:0 auto; width: 570px; height: 468px;"
+          >
+            <form>
+              <div class="text-left mb-3">
+                <label for="exampleInputEmail1" class="form-label">Nama</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ nama }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                  readonly
+                />
+              </div>
+              <div class="text-left mb-3">
+                <label for="exampleInputEmail1" class="form-label">NIM</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ nim }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                  readonly
+                />
+              </div>
+              <div class="text-left mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                  >Generation</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ gen }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                  disabled
+                />
+              </div>
+              <div class="text-left mb-3">
+                <label
+                  for="exampleInputEmail1"
+                  class="form-label"
+                  style="text-align: left"
+                  >Kode Anggota</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  value="{{ kodeAnggota }}"
+                  style="border-color: #200463; background-color: #f3f3f3"
+                  readonly
+                />
+              </div>
+            </form>
+            <!--Button Training-->
+            <div class="row d-flex justify-content-center">
+              <div class="col-md-3 mb-5 mt-1 pt-3">
+                <a
+                  class="btn"
+                  style="
+                    background-color: #ff6e5a;
+                    color: white;
+                    font-weight: bold;
+                  "
+                  href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
+                >
+                  Submit
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-
-    <br>
-    <div class="row">
-        <div class="col-md-3 offset-lg-2">
-            <a class="btn btn-warning btn-lg" href="{{ url_for('train_classifier_route', nbr=prs) }}"> Training </a>
-        </div>
-    </div>
-</section>
-
-</body>
+      </div>
+      <br />
+    </section>
+  </body>
 </html>

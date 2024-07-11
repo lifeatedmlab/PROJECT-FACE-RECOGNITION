@@ -6,6 +6,11 @@ mydb = mysql.connector.connect(
     passwd="9YhkHLjLSS",
     database="sql12717385",
     port=3306
+    # host="localhost",
+    # user="root",
+    # passwd="",
+    # database="test",
+    # port = 3308
 )
 
 mycursor = mydb.cursor()

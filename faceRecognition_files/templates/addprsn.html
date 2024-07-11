@@ -1,51 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     {% include "head.html" %}
-</head>
-<body>
+    <style>
+      .center-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Adjust as needed */
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body style="background-color: #f4f6fc">
+    {% include "navbar.html" %}
 
-{% include "navbar.html" %}
+    <section class="py-1">
+      <section class="py-1">
+        <h3
+          style="
+            text-align: center;
+            color: #200463;
+            margin: 20px 0;
+            padding: 10px;
+          "
+        >
+          Pendaftaran Anggota
+        </h3>
+        <div class="container text-center">
+          <div class="row justify-content-center">
+            <div class="card col-md-6 pt-3 margin: 0 auto">
+              <form class="form" method="post" action="/addprsn_submit">
+                <div class="text-left mb-3">
+                  <label for="txtnama" class="form-label"
+                    >Nama Lengkap</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="txtnama"
+                      name="txtnama"
+                      style="border-color: #200463; background-color: #f3f3f3"
+                      required
+                    />
+                </div>
+                <div class="text-left mb-3">
+                  <label for="txtnim" class="form-label"
+                    >NIM</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="txtnim"
+                      name="txtnim"
+                      style="border-color: #200463; background-color: #f3f3f3"
+                      required
+                    />
+                </div>
+                <div class="text-left mb-3">
+                  <label for="optgen" class="form-label">Generation</label>
+                  <div class="form-label">
+                    <select class="form-control" name="optgen" id="optgen" style="border-color: #200463; background-color: #f3f3f3"
+                    required>
+                      <option value="4">G4</option>
+                      <option value="5">G5</option>
+                      <option value="6">G6</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="text-left mb-3">
+                  <label for="txtkdag" class="form-label"
+                    >Kode Anggota</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="txtkdag"
+                      name="txtkdag"
+                      style="border-color: #200463; background-color: #f3f3f3"
+                      required
+                    />
+                </div>
+                <!--Submit button-->
+                <div class="form-group row">
+                  <label class="col-sm-2 col-form-label"></label>
+                  <div class="col-sm-8">
+                    <a href="/" type="button" class="btn" style="background-color: #200463; color: white"
+                      ><b>Back</b></a
+                    >
+                    <input
+                    type="submit"
+                    class="btn"
+                    style="background-color: #ff6e5a; color: white; font-weight: bold;"
+                    value="Next"
+                  />
 
-<section class="py-1">
-    <div class="row mt-5">
-        <div class="col-lg-8 offset-lg-2">
-            <h3>Add Personnel</h3>
-            <hr>
-            <form class="form" method="post" action="/addprsn_submit">
-                <div class="form-group row">
-                    <label for="txtnbr" class="col-sm-2 col-form-label">Person Id</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" id="txtnbr" name="txtnbr" value={{ newnbr }} readonly>
-                    </div>
+                  </div>
                 </div>
-                <div class="form-group row">
-                    <label for="txtname" class="col-sm-2 col-form-label">Name</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="txtname" name="txtname" required>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="optskill" class="col-sm-2 col-form-label">Skill</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" name="optskill" id="optskill">
-                            <option value="SOFTWARE">Software</option>
-                            <option value="HARDWARE">Hardware</option>
-                            <option value="ELECTRICAL">Electrical</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label"></label>
-                    <div class="col-sm-8">
-                        <input type="submit" class="btn btn-primary btn-lg" value="Next">
-                        <a href="/" type="button" class="btn btn-warning btn-lg"><b>Back</b></a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</section>
-
-</body>
+              </form>
+              {% with messages = get_flashed_messages(with_categories=true) %} {% if
+              messages %}
+              <div class="alert alert-warning" role="alert">
+                {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+              </div>
+              {% endif %} {% endwith %}
+            </div>
+          </div>
+      </div>
+    </section>
+  </body>
 </html>

@@ -22,6 +22,10 @@ Gunakan informasi berikut untuk menghubungkan aplikasi ke database:
 - **Database password**: `9YhkHLjLSS`
 - **Port number**: `3306`
 
+## Use
+- **requirement**: `pip install -r requirements.txt`
+- **deleted.py**: `python deleted.py`
+  
 ## Catatan Penting
 - Hapus File `classifier.xml` : Setiap kali menggunakan aplikasi, harap hapus file `classifier.xml` dan backup file ini jika diperlukan.
 - Hapus Foto di Direktori Dataset: Hapus foto-foto di direktori dataset setelah selesai penggunaan.
