@@ -5,7 +5,7 @@ from face_recognition import face_recognition
 from login import login_user
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
-from addevent import get_event, add_event
+from addevent import eventExists, add_event
 import os
 from enum import Enum
 
@@ -96,13 +96,19 @@ def fr_page():
 def train_classifier_route(kodeAnggota):
     return train_classifier(kodeAnggota)
 
-@app.route('/data_event')
-def data_event():
-    events = get_event()
+@app.route('/event')
+def event():
+    mycursor.execute("SELECT * FROM eventmstr")
+    events = mycursor.fetchall()
+
     return render_template('event.html', events=events)
 
-@app.route('/regist_event', methods=['POST'])
-def regist_event():
+@app.route('/data_event')
+def data_event():
+    return render_template('event_register.html')
+
+@app.route('/event_register', methods=['POST'])
+def event_register():
     kodeAcara = request.form.get('kode-event')
     namaEvent = request.form.get('nama-event')
     waktuAcara = request.form.get('tanggal')
@@ -119,8 +125,12 @@ def regist_event():
         flash('Waktu Acara tidak boleh kosong', 'error')
         return redirect(url_for('data_event'))
     
+    if eventExists(kodeAcara):
+        flash(f'Kode Acara {kodeAcara} sudah ada. Silakan gunakan kode yang lain.', 'error')
+        return redirect(url_for('data_event'))
+    
     add_event(kodeAcara, namaEvent, waktuAcara)
-    return redirect(url_for('event_register.html', kodeAcara=kodeAcara))
+    return redirect(url_for('data_event', kodeAcara=kodeAcara, namaEvent=namaEvent, waktuAcara=waktuAcara))
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
