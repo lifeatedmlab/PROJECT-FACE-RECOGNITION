@@ -17,6 +17,7 @@
             margin-bottom: 2rem;
         }
         .webcam-container {
+            margin-left: 80px;
             width: 952px;
             max-width: 100%;
             gap: 20px;
@@ -25,7 +26,7 @@
         .img-thumbnail {
             object-fit: auto;
             object-position: center;
-            width: 104px;
+            width: 600px;
             max-width: 100%;
             border: 3px solid #200463;
         }
@@ -99,34 +100,50 @@
     {% include "navbar.html" %}
     <h1>Absen Anggota</h1>
     <div class="webcam-container">
-        <img src="{{ url_for('vidfeed_dataset', nbr=prs) }}" width="100%" class="img-thumbnail" alt="webcam">
+        <img id="video-feed" src="{{ url_for('video_feed') }}" width="100%" class="img-thumbnail" alt="webcam">
     </div>
     <div class="content-container">
         <div class="summary-container">
             <div class="summary">
                 <h2>Summary</h2>
                 <div class="kode-anggota">
-                    <p class="header">Kode Anggota</p> <p class="content">Loading</p>
+                    <p class="header">Kode Anggota</p>
+                    <p id="kode-anggota" class="content">Loading...</p>
                 </div>
                 <div class="nama">
-                    <p class="header">Nama</p> <p class="content">Loading</p>
+                    <p class="header">Nama</p>
+                    <p id="nama" class="content">Loading...</p>
                 </div>
                 <div class="nim">
-                    <p class="header">NIM</p> <p class="content">Loading</p>
+                    <p class="header">NIM</p>
+                    <p id="nim" class="content">Loading...</p>
                 </div>
                 <div class="generation">
-                    <p class="header">Generation</p> <p class="content">Loading</p>
+                    <p class="header">Generation</p>
+                    <p id="generation" class="content">Loading...</p>
                 </div>
-            </div>
-            <div class="action">
-                <button onclick="submitAbsen()">Submit</button>
+                <div class="action">
+                    <button onclick="submitAttendance()">Submit</button>
+                </div>
             </div>
         </div>
     </div>
+    <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
     <script>
-        function submitAbsen() {
-            // Add actual submit logic here
-            alert("Absensi berhasil terdaftar.");
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('summary', function(data) {
+            console.log('Received summary:', data);
+            document.getElementById('kode-anggota').textContent = data.kodeAnggota;
+            document.getElementById('nama').textContent = data.nama;
+            document.getElementById('nim').textContent = data.nim;
+            document.getElementById('generation').textContent = data.gen;
+            document.getElementById('confidence').textContent = data.confidence + '%';
+        });
+
+        function submitAttendance() {
+            // Add your submit logic here
+            alert('Attendance submitted!');
         }
     </script>
 </body>

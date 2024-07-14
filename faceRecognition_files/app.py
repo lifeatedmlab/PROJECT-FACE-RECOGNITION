@@ -1,16 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from database import mydb, mycursor
 from dataset import generate_dataset
-from face_recognition import face_recognition
+from face_recognition import generate_face_recognition_data, generate_frames
 from login import login_user
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
 from addevent import eventExists, add_event
 import os
+import logging
 from enum import Enum
+from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+socketio = SocketIO(app)
 
 class Generation(Enum):
     GEN4 = '4'
@@ -86,7 +89,12 @@ def vidfeed_dataset(kodeAnggota):
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(face_recognition(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generate_frames(),  mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@socketio.on('connect')
+def handle_connect():
+    logging.debug('Client connected')
+    socketio.start_background_task(target=generate_face_recognition_data, socketio = socketio)
 
 @app.route('/fr_page')
 def fr_page():
@@ -132,5 +140,9 @@ def event_register():
     add_event(kodeAcara, namaEvent, waktuAcara)
     return redirect(url_for('data_event', kodeAcara=kodeAcara, namaEvent=namaEvent, waktuAcara=waktuAcara))
 
+@app.route('/absensi')
+def absensi():
+    return render_template('absensi.html')
+
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    socketio.run(app)(host='127.0.0.1', port=5000, debug=True)
