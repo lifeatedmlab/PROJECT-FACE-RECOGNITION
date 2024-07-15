@@ -82,21 +82,23 @@ def get_person_numbers_from_db():
 faceCascade = cv2.CascadeClassifier(os.path.join("faceRecognition_files", "resources", "haarcascade_frontalface_default.xml"))
 classifiers = load_classifiers()
 
+
 def initialize_capture():
     global cap
-    cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) 
-
+    cap = cv2.VideoCapture(0) 
+    if not cap.isOpened():
+        logging.error("Error: Could not open video stream.")
+        return False
+    return True
 
 def generate_frames():
-    initialize_capture()
+    if not initialize_capture():
+        return
     while cap.isOpened():
         ret, img = cap.read()
         if not ret:
+            logging.error("Failed to read frame from camera")
             break
-
-        draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 0), "Face", classifiers)
 
         frame = cv2.imencode('.jpg', img)[1].tobytes()
         yield (b'--frame\r\n'
@@ -106,7 +108,8 @@ def generate_frames():
     cv2.destroyAllWindows()
 
 def generate_face_recognition_data(socketio):
-    initialize_capture()
+    if not initialize_capture():
+        return
 
     while cap.isOpened():
         ret, img = cap.read()
@@ -114,7 +117,7 @@ def generate_face_recognition_data(socketio):
             logging.error("Failed to read frame from camera")
             break
 
-        coords = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 0), "Face", classifiers)
+        coords = detect_faces(img, faceCascade, 1.1, 10, classifiers)
         
         if coords:
             for coord in coords:
@@ -129,14 +132,13 @@ def generate_face_recognition_data(socketio):
     cap.release()
     cv2.destroyAllWindows()
 
-def draw_boundary(img, classifier, scaleFactor, minNeighbors, color, text, clfs):
+def detect_faces(img, classifier, scaleFactor, minNeighbors, clfs):
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     features = classifier.detectMultiScale(gray_image, scaleFactor, minNeighbors)
 
     coords = []
 
     for (x, y, w, h) in features:
-        cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
         region = gray_image[y:y + h, x:x + w]
         if region.size == 0:
             continue
@@ -165,11 +167,6 @@ def draw_boundary(img, classifier, scaleFactor, minNeighbors, color, text, clfs)
         }
 
         coords.append(result)
-
-        if best_confidence > 70:
-            cv2.putText(img, s[1], (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 1, cv2.LINE_AA)
-        else:
-            cv2.putText(img, "UNKNOWN", (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 1, cv2.LINE_AA)
 
     return coords
 

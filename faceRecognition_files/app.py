@@ -89,12 +89,12 @@ def vidfeed_dataset(kodeAnggota):
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(generate_frames(),  mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(generate_frames())
 
 @socketio.on('connect')
 def handle_connect():
     logging.debug('Client connected')
-    socketio.start_background_task(target=generate_face_recognition_data, socketio = socketio)
+    socketio.start_background_task(target=generate_face_recognition_data, socketio=socketio)
 
 @app.route('/fr_page')
 def fr_page():
@@ -144,5 +144,6 @@ def event_register():
 def absensi():
     return render_template('absensi.html')
 
-if __name__ == "__main__":
-    socketio.run(app)(host='127.0.0.1', port=5000, debug=True)
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    socketio.run(app, host='127.0.0.1', port=5000, debug=True)
