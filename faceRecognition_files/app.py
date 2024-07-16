@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from database import mydb, mycursor
 from dataset import generate_dataset
-from face_recognition import generate_face_recognition_data, generate_frames
+from face_recognition import process_camera_stream
 from login import login_user
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
@@ -87,18 +87,14 @@ def vfdataset_page(kodeAnggota):
 def vidfeed_dataset(kodeAnggota):
     return Response(generate_dataset(kodeAnggota), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames())
-
-@socketio.on('connect')
+@socketio.on('connect', namespace='/video')
 def handle_connect():
     logging.debug('Client connected')
-    socketio.start_background_task(target=generate_face_recognition_data, socketio=socketio)
+    socketio.start_background_task(target=process_camera_stream, socketio=socketio)
 
-@app.route('/fr_page')
-def fr_page():
-    return render_template('fr_page.html')
+# @app.route('/fr_page')
+# def fr_page():
+#     return render_template('fr_page.html')
 
 @app.route('/train_classifier/<kodeAnggota>')
 def train_classifier_route(kodeAnggota):

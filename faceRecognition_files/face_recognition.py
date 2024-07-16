@@ -5,6 +5,7 @@ from database import mycursor
 import os
 import boto3
 import logging
+import base64
 
 s3 = boto3.client('s3',
                   endpoint_url='https://a1c30d551c1d5963fc6afe44c3a6777c.r2.cloudflarestorage.com',
@@ -83,32 +84,11 @@ faceCascade = cv2.CascadeClassifier(os.path.join("faceRecognition_files", "resou
 classifiers = load_classifiers()
 
 
-def initialize_capture():
+def process_camera_stream(socketio):
     global cap
     cap = cv2.VideoCapture(0) 
     if not cap.isOpened():
         logging.error("Error: Could not open video stream.")
-        return False
-    return True
-
-def generate_frames():
-    if not initialize_capture():
-        return
-    while cap.isOpened():
-        ret, img = cap.read()
-        if not ret:
-            logging.error("Failed to read frame from camera")
-            break
-
-        frame = cv2.imencode('.jpg', img)[1].tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-def generate_face_recognition_data(socketio):
-    if not initialize_capture():
         return
 
     while cap.isOpened():
@@ -117,18 +97,21 @@ def generate_face_recognition_data(socketio):
             logging.error("Failed to read frame from camera")
             break
 
+        # Encode frame to JPEG
+        ret, buffer = cv2.imencode('.jpg', img)
+        frame = base64.b64encode(buffer).decode('utf-8')
+
+        # Emit frame for video feed
+        socketio.emit('video_frame', frame, namespace='/video')
+
+        # Detect faces and emit recognition data
         coords = detect_faces(img, faceCascade, 1.1, 10, classifiers)
-        
         if coords:
             for coord in coords:
-                if coord['confidence'] > 70:
+                if coord['confidence'] > 80:
                     logging.debug(f'Emitting: {coord}')
-                    socketio.emit('summary', coord)
-        
-        key = cv2.waitKey(1)
-        if key == 27:
-            break
-        
+                    socketio.emit('summary', coord, namespace='/video')
+
     cap.release()
     cv2.destroyAllWindows()
 

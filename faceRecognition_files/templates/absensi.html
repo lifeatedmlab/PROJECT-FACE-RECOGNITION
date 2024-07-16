@@ -100,7 +100,7 @@
     {% include "navbar.html" %}
     <h1>Absen Anggota</h1>
     <div class="webcam-container">
-        <img id="video-feed" src="{{ url_for('video_feed') }}" width="100%" class="img-thumbnail" alt="webcam">
+        <img id="video-feed" width="100%" class="img-thumbnail" alt="webcam">
     </div>
     <div class="content-container">
         <div class="summary-container">
@@ -130,14 +130,24 @@
     </div>
     <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
     <script>
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        document.addEventListener("DOMContentLoaded", () => {
+            const socket = io.connect('http://' + document.domain + ':' + location.port + '/video');
 
-        socket.on('summary', function(data) {
-            console.log('Received summary:', data);
-            document.getElementById('kode-anggota').textContent = data.kodeAnggota;
-            document.getElementById('nama').textContent = data.nama;
-            document.getElementById('nim').textContent = data.nim;
-            document.getElementById('generation').textContent = data.gen;
+            socket.on('video_frame', (frame) => {
+                const img = document.getElementById('video-feed');
+                img.src = 'data:image/jpeg;base64,' + frame;
+            });
+
+            socket.on('summary', (data) => {
+                document.getElementById('kode-anggota').textContent = data.kodeAnggota;
+                document.getElementById('nama').textContent = data.nama;
+                document.getElementById('nim').textContent = data.nim;
+                document.getElementById('generation').textContent = data.gen;
+            });
+
+            socket.on('connect', () => {
+                console.log('Connected to server');
+            });
         });
 
         function submitAttendance() {
