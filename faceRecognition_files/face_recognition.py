@@ -4,6 +4,8 @@ from flask import Response
 from database import mycursor
 import os
 import boto3
+import logging
+import base64
 
 s3 = boto3.client('s3',
                   endpoint_url='https://a1c30d551c1d5963fc6afe44c3a6777c.r2.cloudflarestorage.com',
@@ -16,6 +18,9 @@ classifier_dir = os.path.join(current_dir, "faceRecognition_files")
 
 bucket_name = 'imgdataset'
 classifier_prefix = 'classifiers/'
+
+
+
 
 def download_from_s3(bucket_name, s3_key, file_path):
     try:
@@ -75,75 +80,79 @@ def get_person_numbers_from_db():
     rows = mycursor.fetchall()
     return [row[0] for row in rows]
 
-def face_recognition():
-    classifiers = load_classifiers()
+faceCascade = cv2.CascadeClassifier(os.path.join("faceRecognition_files", "resources", "haarcascade_frontalface_default.xml"))
+classifiers = load_classifiers()
 
-    def draw_boundary(img, classifier, scaleFactor, minNeighbors, color, text, clfs):
-        gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        features = classifier.detectMultiScale(gray_image, scaleFactor, minNeighbors)
 
-        coords = []
+def process_camera_stream(socketio, stop_event):
+    global cap
+    cap = cv2.VideoCapture(0) 
+    if not cap.isOpened():
+        logging.error("Error: Could not open video stream.")
+        return
 
-        for (x, y, w, h) in features:
-            cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
-
-            region = gray_image[y:y + h, x:x + w]
-            if region.size == 0:
-                continue
-
-            best_confidence = 0
-            best_id = None
-            for clf in clfs:
-                id, pred = clf.predict(region)
-                confidence = int(100 * (1 - pred / 300))
-                if confidence > best_confidence:
-                    best_confidence = confidence
-                    best_id = id
-
-            mycursor.execute("select b.nama "
-                             "  from img_dataset a "
-                             "  left join usermstr b on a.kodeAnggota = b.kodeAnggota "
-                             " where img_id = %s", (best_id,))
-            s = mycursor.fetchone()
-
-            if s:
-                s = ''.join(s)
-            else:
-                s = "UNKNOWN"
-
-            if best_confidence > 70:
-                cv2.putText(img, s, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 1, cv2.LINE_AA)
-            else:
-                cv2.putText(img, "UNKNOWN", (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 1, cv2.LINE_AA)
-
-            coords = [x, y, w, h]
-        return coords
-
-    def recognize(img, classifiers, faceCascade):
-        coords = draw_boundary(img, faceCascade, 1.1, 10, (255, 255, 0), "Face", classifiers)
-        return img
-
-    faceCascade = cv2.CascadeClassifier(os.path.join(current_dir, "faceRecognition_files", "resources", "haarcascade_frontalface_default.xml"))
-    classifiers = load_classifiers()
-
-    wCam, hCam = 500, 400
-
-    cap = cv2.VideoCapture(0)
-    cap.set(3, wCam)
-    cap.set(4, hCam)
-
-    while True:
+    while not stop_event.is_set() and cap.isOpened():
         ret, img = cap.read()
         if not ret:
-            continue
-        img = recognize(img, classifiers, faceCascade)
-
-        frame = cv2.imencode('.jpg', img)[1].tobytes()
-        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-        key = cv2.waitKey(1)
-        if key == 27:
+            logging.error("Failed to read frame from camera")
             break
+
+        ret, buffer = cv2.imencode('.jpg', img)
+        frame = base64.b64encode(buffer).decode('utf-8')
+
+        socketio.emit('video_frame', frame, namespace='/video')
+        socketio.sleep(0.1)
+
+        coords = detect_faces(img, faceCascade, 1.1, 10, classifiers)
+        if coords:
+            for coord in coords:
+                if coord['confidence'] > 80:
+                    logging.debug(f'Emitting: {coord}')
+                    socketio.emit('summary', coord, namespace='/video')
 
     cap.release()
     cv2.destroyAllWindows()
+
+def detect_faces(img, classifier, scaleFactor, minNeighbors, clfs):
+    gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    features = classifier.detectMultiScale(gray_image, scaleFactor, minNeighbors)
+
+    coords = []
+
+    for (x, y, w, h) in features:
+        region = gray_image[y:y + h, x:x + w]
+        if region.size == 0:
+            continue
+
+        best_confidence = 0
+        best_id = None
+        for clf in clfs:
+            id, pred = clf.predict(region)
+            confidence = int(100 * (1 - pred / 300))
+            if confidence > best_confidence:
+                best_confidence = confidence
+                best_id = id
+
+        mycursor.execute("SELECT b.kodeAnggota, b.nama, b.nim, b.gen "
+                         "FROM img_dataset a "
+                         "LEFT JOIN usermstr b ON a.kodeAnggota = b.kodeAnggota "
+                         "WHERE a.img_id = %s", (best_id,))
+        s = mycursor.fetchone()
+
+        result = {
+            'kodeAnggota': s[0] if s else "UNKNOWN",
+            'nama': s[1] if s else "UNKNOWN",
+            'nim': s[2] if s else "UNKNOWN",
+            'gen': s[3] if s else "UNKNOWN",
+            'confidence': best_confidence
+        }
+
+        coords.append(result)
+
+    return coords
+
+ 
+
+
+ 
+
