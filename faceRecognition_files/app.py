@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, Response, jsonify
 from database import mydb, mycursor
 from dataset import generate_dataset
 from face_recognition import face_recognition
@@ -127,6 +127,18 @@ def event():
     events = mycursor.fetchall()
 
     return render_template('event.html', events=events)
+
+@app.route('/index/<kodeAnggota>', methods=['DELETE'])
+def delete_data(kodeAnggota):
+    try:
+        mycursor.execute("DELETE FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
+        mycursor.execute("DELETE FROM usermstr WHERE kodeAnggota = %s", (kodeAnggota,))
+        mydb.commit()
+        
+        return jsonify({'success': True, 'message': f"Data for kodeAnggota {kodeAnggota} deleted successfully."})
+    except Exception as e:
+        mydb.rollback()
+        return jsonify({'success': False, 'message': str(e)})
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)

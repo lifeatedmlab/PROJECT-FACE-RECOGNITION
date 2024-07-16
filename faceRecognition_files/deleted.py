@@ -11,6 +11,6 @@ def delete_data(kodeAnggota):
         mydb.rollback()
         print(f"Failed to delete data for kodeAnggota {kodeAnggota}: {e}")
 
-if __name__ == "__main__":
-    kodeAnggota = input("Enter the kodeAnggota to delete: ")
-    delete_data(kodeAnggota)
+# if __name__ == "__main__":
+#     kodeAnggota = input("Enter the kodeAnggota to delete: ")
+#     delete_data(kodeAnggota)

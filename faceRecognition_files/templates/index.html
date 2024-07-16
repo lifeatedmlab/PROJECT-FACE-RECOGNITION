@@ -128,13 +128,13 @@
                 </thead>
                 <tbody>
                 {% for item in data %}
-                <tr>
+                <tr data-kode-anggota="{{ item[0] }}">
                     <td>{{ item[1] }}</td>
                     <td>{{ item[2] }}</td>
                     <td>G{{ item[3] }}</td>
                     <td>{{ item[0] }}</td>
                     <td class="actions">
-                        <button class="delete-btn" onclick="confirmDelete()">
+                        <button class="delete-btn" onclick="confirmDelete('{{ item[0] }}')">
                             Delete
                         </button>
                     </td>
@@ -145,11 +145,22 @@
             </div>
         </div>
         <script>
-            function confirmDelete() {
-                if (confirm("Are you sure you want to delete?")) {
-                // Add actual delete logic here
-                alert("Item deleted successfully");
-                }
+            function confirmDelete(kodeAnggota) {
+              if (confirm("Are you sure you want to delete?")) {
+                fetch(`/index/${kodeAnggota}`, {
+                  method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    document.querySelector(`tr[data-kode-anggota='${kodeAnggota}']`).remove();
+                    alert(data.message);
+                  } else {
+                    alert('Failed to delete: ' + data.message);
+                  }
+                })
+                .catch(error => console.error('Error:', error));
+              }
             }
         </script>
 
