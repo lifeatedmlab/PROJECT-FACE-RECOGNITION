@@ -84,27 +84,25 @@ faceCascade = cv2.CascadeClassifier(os.path.join("faceRecognition_files", "resou
 classifiers = load_classifiers()
 
 
-def process_camera_stream(socketio):
+def process_camera_stream(socketio, stop_event):
     global cap
     cap = cv2.VideoCapture(0) 
     if not cap.isOpened():
         logging.error("Error: Could not open video stream.")
         return
 
-    while cap.isOpened():
+    while not stop_event.is_set() and cap.isOpened():
         ret, img = cap.read()
         if not ret:
             logging.error("Failed to read frame from camera")
             break
 
-        # Encode frame to JPEG
         ret, buffer = cv2.imencode('.jpg', img)
         frame = base64.b64encode(buffer).decode('utf-8')
 
-        # Emit frame for video feed
         socketio.emit('video_frame', frame, namespace='/video')
+        socketio.sleep(0.1)
 
-        # Detect faces and emit recognition data
         coords = detect_faces(img, faceCascade, 1.1, 10, classifiers)
         if coords:
             for coord in coords:

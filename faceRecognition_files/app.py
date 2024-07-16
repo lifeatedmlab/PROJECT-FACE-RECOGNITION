@@ -1,19 +1,24 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, Response
+from flask import Flask, render_template, request, redirect, url_for, flash,  jsonify, Response
 from database import mydb, mycursor
 from dataset import generate_dataset
 from face_recognition import process_camera_stream
 from login import login_user
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
-from addevent import eventExists, add_event
+from addevent import eventExists, add_event, generate_event_id
 import os
 import logging
 from enum import Enum
 from flask_socketio import SocketIO, emit
+from threading import Event
+from datetime import datetime
+from absensi import  add_attendance
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 socketio = SocketIO(app)
+stop_event = Event()
 
 class Generation(Enum):
     GEN4 = '4'
@@ -89,8 +94,16 @@ def vidfeed_dataset(kodeAnggota):
 
 @socketio.on('connect', namespace='/video')
 def handle_connect():
+    global stop_event
     logging.debug('Client connected')
-    socketio.start_background_task(target=process_camera_stream, socketio=socketio)
+    stop_event.clear()
+    socketio.start_background_task(target=process_camera_stream, socketio=socketio, stop_event=stop_event)
+
+@socketio.on('disconnect', namespace='/video')
+def handle_disconnect():
+    global stop_event
+    logging.debug('Client disconnected')
+    stop_event.set()
 
 # @app.route('/fr_page')
 # def fr_page():
@@ -136,9 +149,27 @@ def event_register():
     add_event(kodeAcara, namaEvent, waktuAcara)
     return redirect(url_for('data_event', kodeAcara=kodeAcara, namaEvent=namaEvent, waktuAcara=waktuAcara))
 
+
+
 @app.route('/absensi')
 def absensi():
     return render_template('absensi.html')
+
+@app.route('/absensi_event')
+def absensi_event():
+    return render_template('absensi_event.html')
+
+@app.route('/submit_absensi', methods=['POST'])
+def submit_absensi():
+    data = request.json
+    event_id = generate_event_id()
+    waktu_sekarang = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    
+    kode_anggota = data['kodeAnggota']
+
+    add_attendance(kode_anggota, waktu_sekarang)
+    
+    return jsonify({'message': 'Data saved successfully',  'waktu': waktu_sekarang}), 200
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
