@@ -77,7 +77,6 @@ def addprsn():
     return render_template('addprsn.html', generations=Generation)
 
 @app.route('/addprsn_submit', methods=['POST'])
-@login_required
 def addprsn_submit():
     kodeAnggota = request.form.get('txtkdag').upper()
     nama = request.form.get('txtnama').title()
@@ -114,7 +113,6 @@ def addprsn_submit():
     return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
 
 @app.route('/vfdataset_page/<kodeAnggota>')
-@login_required
 def vfdataset_page(kodeAnggota):
     nama = request.args.get('nama')
     nim = request.args.get('nim')
@@ -122,7 +120,6 @@ def vfdataset_page(kodeAnggota):
     return render_template('gendataset.html', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen)
 
 @app.route('/vidfeed_dataset/<kodeAnggota>')
-@login_required
 def vidfeed_dataset(kodeAnggota):
     return Response(generate_dataset(kodeAnggota), mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -140,7 +137,6 @@ def handle_disconnect():
     stop_event.set()
 
 @app.route('/train_classifier/<kodeAnggota>')
-@login_required
 def train_classifier_route(kodeAnggota):
     return train_classifier(kodeAnggota)
 
