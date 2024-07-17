@@ -60,6 +60,15 @@
             text-decoration: none;
             margin-right: 5px;
         }
+        .login-btn {
+            background-color: #4D3682;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 5px;
+        }
         @media (max-width: 768px) {
             nav {
                 flex-direction: column;
@@ -85,32 +94,31 @@
             <img src="{{ url_for('static', filename='img/logo.png') }}" alt="EDELaboratory">
         </div>
         <div class="nav-container">
-            <ul class="nav-links" id="navLinks">
-                <!-- Links will be dynamically populated based on user role -->
-            </ul>
-            <a id="logoutBtn" class="logout-btn" href="#logout">Logout</a>
+            <ul class="nav-links" id="navLinks"></ul>
+            <a id="loginBtn" class="login-btn" href="{{ url_for('login') }}">Login</a>
+            <a id="logoutBtn" class="logout-btn" href="{{ url_for('logout') }}">Logout</a>
         </div>
     </nav>
 
     <script>
-        // Simulate user role (replace with actual authentication logic)
-        const isAdmin = true; // Set to false to see non-admin menu
-
+        // Mengambil nilai isAdmin dari Flask
+        const isAdmin = {{ 'true' if current_user.is_admin else 'false' }};
         const navLinks = document.getElementById('navLinks');
         const logoutBtn = document.getElementById('logoutBtn');
-        
+        const loginBtn = document.getElementById('loginBtn');
+    
         const links = isAdmin ? 
             [
-                {name: 'Data Anggota', href: '/'},
-                {name: 'Data Event', href: '#'},
+                {name: 'Data Anggota', href: '/data_anggota'},
+                {name: 'Data Event', href: '/event'},
                 {name: 'Absensi', href: '/absensi'}
             ] :
             [
-                {name: 'Home', href: '#'},
-                {name: 'Pendaftaran', href: '#'},
-                {name: 'Absensi', href: '#'}
+                {name: 'Home', href: '/'},
+                {name: 'Pendaftaran', href: '/addprsn'},
+                {name: 'Absensi', href: '/absensi'}
             ];
-
+    
         links.forEach(link => {
             const li = document.createElement('li');
             const a = document.createElement('a');
@@ -126,20 +134,22 @@
             li.appendChild(a);
             navLinks.appendChild(li);
         });
-
+    
         if (!isAdmin) {
             logoutBtn.style.display = 'none';
         } else {
+            loginBtn.style.display = 'none'; // Menyembunyikan tombol login jika isAdmin true
             logoutBtn.onclick = function(e) {
                 e.preventDefault();
                 if (confirm('Are you sure you want to logout?')) {
-                    // Add actual logout logic here
+                    // Tambahkan logika logout sesungguhnya di sini
                     alert('Logged out successfully');
-                    // Redirect to login page or perform other logout actions
-                    // window.location.href = '/login';
+                    // Alihkan ke halaman login atau lakukan tindakan logout lainnya
+                    window.location.href = '{{ url_for("logout") }}';
                 }
             };
         }
     </script>
+    
 </body>
 </html>
