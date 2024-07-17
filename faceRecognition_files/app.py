@@ -1,16 +1,24 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, Response, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash,  jsonify, Response
 from database import mydb, mycursor
 from dataset import generate_dataset
-from face_recognition import face_recognition
+from face_recognition import process_camera_stream
 from login import login_user
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
-from addevent import add_event
+from addevent import eventExists, add_event, generate_event_id
 import os
+import logging
 from enum import Enum
+from flask_socketio import SocketIO, emit
+from threading import Event
+from datetime import datetime
+from absensi import  add_attendance
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+socketio = SocketIO(app)
+stop_event = Event()
 
 class Generation(Enum):
     GEN4 = '4'
@@ -84,17 +92,33 @@ def vfdataset_page(kodeAnggota):
 def vidfeed_dataset(kodeAnggota):
     return Response(generate_dataset(kodeAnggota), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(face_recognition(), mimetype='multipart/x-mixed-replace; boundary=frame')
+@socketio.on('connect', namespace='/video')
+def handle_connect():
+    global stop_event
+    logging.debug('Client connected')
+    stop_event.clear()
+    socketio.start_background_task(target=process_camera_stream, socketio=socketio, stop_event=stop_event)
 
-@app.route('/fr_page')
-def fr_page():
-    return render_template('fr_page.html')
+@socketio.on('disconnect', namespace='/video')
+def handle_disconnect():
+    global stop_event
+    logging.debug('Client disconnected')
+    stop_event.set()
+
+# @app.route('/fr_page')
+# def fr_page():
+#     return render_template('fr_page.html')
 
 @app.route('/train_classifier/<kodeAnggota>')
 def train_classifier_route(kodeAnggota):
     return train_classifier(kodeAnggota)
+
+@app.route('/event')
+def event():
+    mycursor.execute("SELECT * FROM eventmstr")
+    events = mycursor.fetchall()
+
+    return render_template('event.html', events=events)
 
 @app.route('/data_event')
 def data_event():
@@ -118,27 +142,35 @@ def event_register():
         flash('Waktu Acara tidak boleh kosong', 'error')
         return redirect(url_for('data_event'))
     
+    if eventExists(kodeAcara):
+        flash(f'Kode Acara {kodeAcara} sudah ada. Silakan gunakan kode yang lain.', 'error')
+        return redirect(url_for('data_event'))
+    
     add_event(kodeAcara, namaEvent, waktuAcara)
-    return redirect(url_for('event', kodeEvent=kodeAcara, namaEvent=namaEvent, Tanggal=waktuAcara))
+    return redirect(url_for('data_event', kodeAcara=kodeAcara, namaEvent=namaEvent, waktuAcara=waktuAcara))
 
-@app.route('/event')
-def event():
-    mycursor.execute("SELECT * FROM eventmstr")
-    events = mycursor.fetchall()
 
-    return render_template('event.html', events=events)
 
-@app.route('/index/<kodeAnggota>', methods=['DELETE'])
-def delete_data(kodeAnggota):
-    try:
-        mycursor.execute("DELETE FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
-        mycursor.execute("DELETE FROM usermstr WHERE kodeAnggota = %s", (kodeAnggota,))
-        mydb.commit()
-        
-        return jsonify({'success': True, 'message': f"Data for kodeAnggota {kodeAnggota} deleted successfully."})
-    except Exception as e:
-        mydb.rollback()
-        return jsonify({'success': False, 'message': str(e)})
+@app.route('/absensi')
+def absensi():
+    return render_template('absensi.html')
 
-if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000, debug=True)
+@app.route('/absensi_event')
+def absensi_event():
+    return render_template('absensi_event.html')
+
+@app.route('/submit_absensi', methods=['POST'])
+def submit_absensi():
+    data = request.json
+    event_id = generate_event_id()
+    waktu_sekarang = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    
+    kode_anggota = data['kodeAnggota']
+
+    add_attendance(kode_anggota, waktu_sekarang)
+    
+    return jsonify({'message': 'Data saved successfully',  'waktu': waktu_sekarang}), 200
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    socketio.run(app, host='127.0.0.1', port=5000, debug=True)
