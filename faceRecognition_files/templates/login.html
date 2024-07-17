@@ -91,7 +91,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var error = "{{ error }}";
-            if (error) {
+            if (error && error !== 'None') {  // Check if error is not 'None'
                 alert(error);
             }
         });

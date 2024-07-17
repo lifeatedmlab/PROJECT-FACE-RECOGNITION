@@ -115,33 +115,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for event in events %}
                     <tr>
-                        <td>1000000001</td>
-                        <td>Grow With EDE #1</td>
-                        <td>27/06/2024</td>
+                        <td>{{ event[0] }}</td>
+                        <td>{{ event[1] }}</td>
+                        <td>{{ event[2] }}</td>
                         <td class="actions">
                             <a href="#" class="view-link">Edit</a>
                             <button class="delete-btn" onclick="confirmDelete()">Delete</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>1000000002</td>
-                        <td>Grow With EDE #2</td>
-                        <td>27/06/2024</td>
-                        <td class="actions">
-                            <a href="#" class="view-link">Edit</a>
-                            <button class="delete-btn" onclick="confirmDelete()">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1000000003</td>
-                        <td>Grow With EDE #3</td>
-                        <td>27/06/2024</td>
-                        <td class="actions">
-                            <a href="#" class="view-link">Edit</a>
-                            <button class="delete-btn" onclick="confirmDelete()">Delete</button>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

@@ -80,15 +80,15 @@
     <div class="content">
         <h1>Registrasi Event</h1>
         <div class="form-container">
-            <form id="eventForm" action="event" method="GET">
+            <form id="eventForm" action="{{ url_for('event_register') }}" method="POST">
                 <label for="kode-event">Kode Event</label>
-                <input type="text" id="kode-event" name="kode-event" value="">
+                <input type="text" id="kode-event" name="kode-event" required>
                 
                 <label for="nama-event">Nama Event</label>
-                <input type="text" id="nama-event" name="nama-event" value="">
+                <input type="text" id="nama-event" name="nama-event" required>
                 
                 <label for="tanggal">Tanggal</label>
-                <input type="date" id="tanggal" name="tanggal" value="">
+                <input type="date" id="tanggal" name="tanggal" required>
                 
                 <div class="buttons">
                     <button type="button" class="discard-btn" onclick="confirmDiscard()">Discard</button>
@@ -97,7 +97,7 @@
             </form>
         </div>
     </div>
-
+    
     <script>
         function confirmDiscard() {
             if (confirm('Are you sure you want to discard the changes?')) {
@@ -105,7 +105,7 @@
                 alert('Changes discarded.');
             }
         }
-
+    
         function confirmSubmit(event) {
             event.preventDefault(); // Prevent the form from submitting immediately
             if (confirm('Are you sure you want to submit the form?')) {
@@ -113,5 +113,6 @@
             }
         }
     </script>
+    
 </body>
 </html>

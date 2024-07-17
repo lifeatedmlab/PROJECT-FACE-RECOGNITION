@@ -91,28 +91,6 @@
 
     <section class="py-1">
       <div class="row mt-5">
-        <div class="col-lg-8 offset-lg-2">
-          {% with messages = get_flashed_messages(with_categories=true) %} {% if
-          messages %}
-          <div class="alert alert-dismissible fade show" role="alert">
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-          </div>
-          {% endif %} {% endwith %}
-        <!--Buttons dipake klo butuh aja, harusnya gaada-->
-        <!-- <div class="row d-flex justify-content-end">
-            <div class="col-lg-4">
-                <a
-                    href="/addprsn"
-                    class="custom-btn"
-                    style="background-color: #ff6e5a; color: white"
-                    ><b>Registrasi Anggota</b></a
-                >
-            </div>
-        </div> -->
-        <br />
-        <!--Table-->
         <div class="content">
             <h1>Data Anggota Terdaftar</h1>
             <div class="table-container">

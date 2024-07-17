@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from database import mydb, mycursor
 from dataset import generate_dataset
@@ -61,6 +61,7 @@ def login():
         if account:
             user = User(account[0], account[2])  # Assuming the 'is_admin' flag is at index 2
             login_user(user)
+            session['kode_admin'] = account[0]  # Simpan kode admin ke dalam session
             return redirect(url_for('dataanggota'))
         else:
             error = 'Invalid username or password'
@@ -143,7 +144,7 @@ def train_classifier_route(kodeAnggota):
 @app.route('/event')
 @login_required
 def event():
-    mycursor.execute("SELECT * FROM eventmstr")
+    mycursor.execute("SELECT kodeAcara, namaEvent, waktuAcara FROM eventmstr")
     events = mycursor.fetchall()
     return render_template('event.html', events=events)
 
@@ -158,21 +159,13 @@ def event_register():
     kodeAcara = request.form.get('kode-event')
     namaEvent = request.form.get('nama-event')
     waktuAcara = request.form.get('tanggal')
+    kodeAdmin = session.get('kode_admin')
 
-    if not kodeAcara:
-        flash('Kode Acara tidak boleh kosong', 'error')
+    if not kodeAcara or not namaEvent or not waktuAcara:
         return redirect(url_for('data_event'))
 
-    if not namaEvent:
-        flash('Nama Event tidak boleh kosong', 'error')
-        return redirect(url_for('data_event'))
-
-    if not waktuAcara:
-        flash('Waktu Acara tidak boleh kosong', 'error')
-        return redirect(url_for('data_event'))
-
-    add_event(kodeAcara, namaEvent, waktuAcara)
-    return redirect(url_for('data_event', kodeAcara=kodeAcara, namaEvent=namaEvent, waktuAcara=waktuAcara))
+    add_event(kodeAcara, namaEvent, waktuAcara, kodeAdmin)
+    return redirect(url_for('event'))
 
 @app.route('/absensi')
 def absensi():
