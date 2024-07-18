@@ -13,6 +13,7 @@ from flask_socketio import SocketIO, emit
 from threading import Event
 from datetime import datetime
 from absensi import add_attendance
+import pytz
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -171,19 +172,43 @@ def event_register():
 def absensi():
     return render_template('absensi.html', current_url=request.path)
 
+@app.route('/select_event')
+def select_event():
+    mycursor.execute("SELECT kodeAcara, namaEvent, eventId  FROM eventmstr")
+    select_event = mycursor.fetchall()
+    return render_template('select_event.html', events=select_event, current_url=request.path)
+
+@app.route('/check_passkey', methods=['POST'])
+def check_passkey():
+    kode_acara = request.form['kode_acara']
+    passkey = request.form['passkey']
+    mycursor.execute("SELECT kodeAcara, eventId FROM eventmstr WHERE kodeAcara = %s", (kode_acara,))
+    result = mycursor.fetchone()
+    if result and result[0] == passkey:
+        return jsonify({'status': 'success', 'message': 'Passkey is correct', 'eventId': result[1]})
+    else:
+        return jsonify({'status': 'fail', 'message': 'Incorrect passkey'})
+    
 @app.route('/absensi_event')
 def absensi_event():
-    return render_template('absensi_event.html', current_url=request.path)
+    return render_template('absensi_event.html',  current_url=request.path)
+    
 
 @app.route('/submit_absensi', methods=['POST'])
-@login_required
+# @login_required
 def submit_absensi():
     data = request.json
-    event_id = generate_event_id()
-    waktu_sekarang = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    kode_anggota = data['kodeAnggota']
-    add_attendance(kode_anggota, waktu_sekarang)
-    return jsonify({'message': 'Data saved successfully', 'waktu': waktu_sekarang}), 200
+    waktu_sekarang_utc = datetime.now(pytz.utc)
+    
+    jakarta_tz = pytz.timezone('Asia/Jakarta')
+    waktu_sekarang_wib = waktu_sekarang_utc.astimezone(jakarta_tz).strftime('%Y-%m-%d %H:%M:%S')
+    
+    kodeAnggota = data['kodeAnggota']
+    eventId = data['eventId']
+
+    add_attendance(eventId, kodeAnggota,  waktu_sekarang_wib)
+    
+    return jsonify({'message': 'Data saved successfully',  'waktu': waktu_sekarang_wib}), 200
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

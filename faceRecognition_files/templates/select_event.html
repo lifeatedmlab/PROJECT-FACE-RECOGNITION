@@ -74,23 +74,45 @@
     <div class="content">
         <h1>Pilih Event Absensi</h1>
         <div class="form-container">
-            <form>
+            <form id="event-form">
                 <label for="nama-event">Nama Event</label>
-                <select id="nama-event" name="nama-event">
+                <select id="nama-event" name="kode_acara">
                     <option value="" disabled selected>Pilih nama event</option>
-                    <option value="event1">Grow With EDE #1</option>
-                    <option value="event2">Grow With EDE #2</option>
-                    <option value="event3">Grow With EDE #3</option>
+                    {% for event in events %}
+                        <option value="{{ event[0] }}">{{ event[1] }}</option>
+                    {% endfor %}
                 </select>
                 
                 <label for="passkey">Passkey</label>
                 <input type="text" id="passkey" name="passkey">
                 
                 <div class="buttons">
-                    <button type="button" class="next-btn">Next</button>
+                    <button type="button" class="next-btn" onclick="checkPasskey()">Next</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        function checkPasskey() {
+            const form = document.getElementById('event-form');
+            const formData = new FormData(form);
+
+            fetch('/check_passkey', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const eventId = data.eventId;
+                    window.location.href = '/absensi?eventId=' + eventId;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>

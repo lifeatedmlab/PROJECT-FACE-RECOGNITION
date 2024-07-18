@@ -211,14 +211,23 @@
             });
         });
 
+        function getQueryParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                eventId: urlParams.get('eventId')
+            };
+        }
+
         function submitAttendance() {
+            const queryParams = getQueryParams();
+            const eventId = queryParams.eventId;
             const kodeAnggota = document.getElementById('kode-anggota').textContent;
             fetch('/submit_absensi', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ kodeAnggota: kodeAnggota })
+                body: JSON.stringify({ kodeAnggota: kodeAnggota, eventId: eventId })
             })
             .then(response => response.json())
             .then(data => {
