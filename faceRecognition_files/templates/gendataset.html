@@ -98,10 +98,19 @@
                 />
               </div>
             </form>
-            <!--Button Training-->
-            <div class="row d-flex justify-content-center">
-              <div class="col-md-3 mb-5 mt-1 pt-3">
+            <!--Button Training -->
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label"></label>
+              <div class="col-sm-8">
                 <a
+                  href="/gendataset"
+                  type="button"
+                  class="btn"
+                  style="background-color: #200463; color: white"
+                  ><b>Retry</b></a
+                >
+                <input
+                  type="submit"
                   class="btn"
                   style="
                     background-color: #ff6e5a;
@@ -109,9 +118,8 @@
                     font-weight: bold;
                   "
                   href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
-                >
-                  Submit
-                </a>
+                  value="Submit"
+                />
               </div>
             </div>
           </div>
@@ -119,11 +127,11 @@
       </div>
       <br />
     </section>
-    <script>
+    <!-- <script>
       function submitRegist() {
         // Add actual submit logic here
         alert("Pendaftaran Berhasil");
       }
-    </script>
+    </script> -->
   </body>
 </html>
