@@ -42,13 +42,13 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', current_url=request.path)
 
 @app.route('/data_anggota')
 def dataanggota():
     mycursor.execute("SELECT kodeAnggota, nama, nim, gen FROM usermstr")
     data = mycursor.fetchall()
-    return render_template('data_anggota.html', data=data)
+    return render_template('data_anggota.html', data=data, current_url=request.path)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -75,7 +75,7 @@ def logout():
 
 @app.route('/addprsn')
 def addprsn():
-    return render_template('addprsn.html', generations=Generation)
+    return render_template('addprsn.html', generations=Generation, current_url=request.path)
 
 @app.route('/addprsn_submit', methods=['POST'])
 def addprsn_submit():
@@ -118,7 +118,7 @@ def vfdataset_page(kodeAnggota):
     nama = request.args.get('nama')
     nim = request.args.get('nim')
     gen = request.args.get('gen')
-    return render_template('gendataset.html', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen)
+    return render_template('gendataset.html', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen, current_url='/addprsn')
 
 @app.route('/vidfeed_dataset/<kodeAnggota>')
 def vidfeed_dataset(kodeAnggota):
@@ -146,12 +146,12 @@ def train_classifier_route(kodeAnggota):
 def event():
     mycursor.execute("SELECT kodeAcara, namaEvent, waktuAcara FROM eventmstr")
     events = mycursor.fetchall()
-    return render_template('event.html', events=events)
+    return render_template('event.html', events=events, current_url=request.path)
 
 @app.route('/data_event')
 @login_required
 def data_event():
-    return render_template('event_register.html')
+    return render_template('event_register.html', current_url='/event')
 
 @app.route('/event_register', methods=['POST'])
 @login_required
@@ -169,11 +169,11 @@ def event_register():
 
 @app.route('/absensi')
 def absensi():
-    return render_template('absensi.html')
+    return render_template('absensi.html', current_url=request.path)
 
 @app.route('/absensi_event')
 def absensi_event():
-    return render_template('absensi_event.html')
+    return render_template('absensi_event.html', current_url=request.path)
 
 @app.route('/submit_absensi', methods=['POST'])
 @login_required
