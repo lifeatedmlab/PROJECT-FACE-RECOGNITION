@@ -104,12 +104,11 @@
               <div class="col-sm-8">
                 <a
                   href="/gendataset"
-                  type="button"
                   class="btn"
                   style="background-color: #200463; color: white"
                   ><b>Retry</b></a
                 >
-                <input
+                <!-- <input
                   type="submit"
                   class="btn"
                   style="
@@ -119,7 +118,14 @@
                   "
                   href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
                   value="Submit"
-                />
+                /> -->
+                <a
+                  class="btn"
+                  style="background-color: #ff6e5a; color: white"
+                  href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
+                >
+                  Submit
+                </a>
               </div>
             </div>
           </div>
