@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from database import mydb, mycursor
-from dataset import generate_dataset
+from dataset import generate_dataset, delete_dataset
 from face_recognition import process_camera_stream
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
@@ -120,6 +120,19 @@ def vfdataset_page(kodeAnggota):
     nim = request.args.get('nim')
     gen = request.args.get('gen')
     return render_template('gendataset.html', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen, current_url='/addprsn')
+
+@app.route('/retry_dataset/<kodeAnggota>')
+def retry_dataset(kodeAnggota):
+    delete_dataset(kodeAnggota)
+    mycursor.execute("SELECT nama, nim, gen FROM usermstr WHERE kodeAnggota = %s", (kodeAnggota,))
+    user_data = mycursor.fetchone()
+    
+    if user_data:
+        nama, nim, gen = user_data
+    else:
+        nama, nim, gen = '', '', ''
+    return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
+
 
 @app.route('/vidfeed_dataset/<kodeAnggota>')
 def vidfeed_dataset(kodeAnggota):

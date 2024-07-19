@@ -65,3 +65,16 @@ def generate_dataset(kodeAnggota):
             print("No face detected, skipping frame")
     cap.release()
     cv2.destroyAllWindows()
+    
+def delete_dataset(kodeAnggota):
+    mycursor.execute("SELECT img_id FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
+    rows = mycursor.fetchall()
+
+    for row in rows:
+        img_id = row[0]
+        file_name_path = os.path.join(dataset_dir, f"{kodeAnggota}.{img_id}.jpg")
+        if os.path.exists(file_name_path):
+            os.remove(file_name_path)
+
+    mycursor.execute("DELETE FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
+    mydb.commit()

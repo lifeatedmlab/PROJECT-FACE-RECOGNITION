@@ -103,22 +103,10 @@
               <label class="col-sm-2 col-form-label"></label>
               <div class="col-sm-8">
                 <a
-                  href="/gendataset"
+                  href="{{ url_for('retry_dataset', kodeAnggota=kodeAnggota) }}"
                   class="btn"
                   style="background-color: #200463; color: white"
-                  ><b>Retry</b></a
-                >
-                <!-- <input
-                  type="submit"
-                  class="btn"
-                  style="
-                    background-color: #ff6e5a;
-                    color: white;
-                    font-weight: bold;
-                  "
-                  href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
-                  value="Submit"
-                /> -->
+                ><b>Retry</b></a>
                 <a
                   class="btn"
                   style="background-color: #ff6e5a; color: white"
@@ -133,11 +121,21 @@
       </div>
       <br />
     </section>
-    <!-- <script>
-      function submitRegist() {
-        // Add actual submit logic here
-        alert("Pendaftaran Berhasil");
+    <script>
+      function retryDataset(kodeAnggota) {
+        fetch(`/retry_dataset/${kodeAnggota}`, {
+          method: 'DELETE',
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              location.reload();
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch(error => console.error('Error:', error));
       }
-    </script> -->
+    </script>
   </body>
 </html>
