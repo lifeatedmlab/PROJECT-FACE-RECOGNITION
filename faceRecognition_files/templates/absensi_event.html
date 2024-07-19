@@ -101,11 +101,11 @@
         <div class="form-container">
             <form>
                 <label for="nama-event" class="visually-hidden">Nama Event</label>
-                <select id="nama-event" name="nama-event">
+                <select id="nama-event" name="nama-event" onchange="fetchAbsensi()">
                     <option value="" disabled selected>Pilih nama event</option>
-                    <option value="event1">Grow With EDE #1</option>
-                    <option value="event2">Grow With EDE #2</option>
-                    <option value="event3">Grow With EDE #3</option>
+                    {% for event in events %}
+                        <option value="{{ event[0] }}">{{ event[1] }}</option>
+                    {% endfor %}
                 </select>
             </form>
         </div>
@@ -120,21 +120,41 @@
                         <th>Waktu Absensi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <!-- Data absen anggota will appear here
-                        <td>FATH</td>
-                        <td>Fathimah Azzahra</td>
-                        <td>1202213255</td>
-                        <td>4</td>
-                        <td>29/06/2024 11:11:11</td>
-                        -->
-                    </tr>
-                    <!-- Add more rows as needed -->
+                <tbody id="absensi-tbody">
+                    <!-- Data absen anggota will appear here -->
                 </tbody>
             </table>
         </div>
     </div>
+
+    <script>
+        function fetchAbsensi() {
+            const eventId = document.getElementById('nama-event').value;
+            if (eventId) {
+                fetch(`/get_absensi?eventId=${eventId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const tbody = document.getElementById('absensi-tbody');
+                            tbody.innerHTML = '';
+                            data.data.forEach(item => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${item.kodeAnggota}</td>
+                                    <td>${item.nama}</td>
+                                    <td>${item.nim}</td>
+                                    <td>${item.gen}</td>
+                                    <td>${item.waktu}</td>
+                                `;
+                                tbody.appendChild(row);
+                            });
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
 </body>
 </html>

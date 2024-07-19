@@ -191,8 +191,10 @@ def check_passkey():
     
 @app.route('/absensi_event')
 def absensi_event():
-    return render_template('absensi_event.html',  current_url=request.path)
-    
+    mycursor.execute("SELECT eventId, namaEvent FROM eventmstr")
+    events = mycursor.fetchall()
+    return render_template('absensi_event.html', events=events, current_url=request.path)
+
 
 @app.route('/submit_absensi', methods=['POST'])
 # @login_required
@@ -209,6 +211,39 @@ def submit_absensi():
     add_attendance(eventId, kodeAnggota,  waktu_sekarang_wib)
     
     return jsonify({'message': 'Data saved successfully',  'waktu': waktu_sekarang_wib}), 200
+
+@app.route('/get_absensi', methods=['GET'])
+@login_required
+def get_absensi():
+    event_id = request.args.get('eventId')
+    if not event_id:
+        return jsonify({'status': 'fail', 'message': 'eventId is required'}), 400
+
+    query = """
+        SELECT 
+            u.kodeAnggota, u.nama, u.nim, u.gen, a.waktu 
+        FROM 
+            absensi a
+        JOIN 
+            usermstr u ON a.kodeAnggota = u.kodeAnggota
+        JOIN 
+            eventmstr e ON a.eventId = e.eventId
+        WHERE 
+            e.eventId = %s
+    """
+    mycursor.execute(query, (event_id,))
+    results = mycursor.fetchall()
+    absensi_data = []
+    for row in results:
+        absensi_data.append({
+            'kodeAnggota': row[0],
+            'nama': row[1],
+            'nim': row[2],
+            'gen': row[3],
+            'waktu': row[4].strftime('%Y-%m-%d %H:%M:%S')
+        })
+
+    return jsonify({'status': 'success', 'data': absensi_data}), 200
 
 @app.route('/index/<kodeAnggota>', methods=['DELETE'])
 def delete_data(kodeAnggota):
