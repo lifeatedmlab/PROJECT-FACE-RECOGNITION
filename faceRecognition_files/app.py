@@ -269,6 +269,32 @@ def delete_data(kodeAnggota):
     except Exception as e:
         mydb.rollback()
         return jsonify({'success': False, 'message': str(e)})
+    
+@app.route('/event/<eventID>', methods=['DELETE'])
+def delete_data_event(eventID):
+    try:
+        logging.debug(f"Attempting to delete event with ID: {eventID}")
+        mycursor.execute("DELETE FROM eventmstr WHERE eventID = %s", (eventID,))
+        mydb.commit()
+        
+        return jsonify({'success': True, 'message': f"Data for {eventID} deleted successfully."})
+    except Exception as e:
+        logging.error(f"Error deleting event with ID: {eventID} - {e}")
+        mydb.rollback()
+        return jsonify({'success': False, 'message': str(e)})
+
+
+# @app.route('/editEvent/<eventID>')
+# def editEvent(eventID):
+#     delete_dataset(eventID)
+#     mycursor.execute("SELECT eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara FROM eventmstr WHERE eventID = %s", (eventID,))
+#     event_data = mycursor.fetchone()
+    
+#     if event_data:
+#         eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara = event_data
+#     else:
+#         eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara = '', '', '', '', ''
+#     return redirect(url_for('data_event', eventID=eventID, kodeAdmin=kodeAdmin, namaEvent=namaEvent, waktuAcara=waktuAcara))
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
