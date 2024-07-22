@@ -261,6 +261,8 @@ def get_absensi():
 @app.route('/index/<kodeAnggota>', methods=['DELETE'])
 def delete_data(kodeAnggota):
     try:
+        mycursor.execute("DELETE FROM absensi WHERE kodeAnggota = %s", (kodeAnggota,))
+        
         mycursor.execute("DELETE FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
         mycursor.execute("DELETE FROM usermstr WHERE kodeAnggota = %s", (kodeAnggota,))
         mydb.commit()
@@ -268,7 +270,8 @@ def delete_data(kodeAnggota):
         return jsonify({'success': True, 'message': f"Data for kodeAnggota {kodeAnggota} deleted successfully."})
     except Exception as e:
         mydb.rollback()
-        return jsonify({'success': False, 'message': str(e)})
+        return jsonify({'success': False, 'message': f"Failed to delete: {e}"})
+
     
 @app.route('/event/<eventID>', methods=['DELETE'])
 def delete_data_event(eventID):
