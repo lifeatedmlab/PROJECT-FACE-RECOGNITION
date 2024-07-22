@@ -20,14 +20,23 @@ bucket_name = 'imgdataset'
 classifier_prefix = 'classifiers/'
 
 
-
-
 def download_from_s3(bucket_name, s3_key, file_path):
     try:
         s3.download_file(bucket_name, s3_key, file_path)
         print(f"Downloaded {s3_key} from S3 bucket {bucket_name} to {file_path}")
     except Exception as e:
         print(f"Failed to download {s3_key} from S3: {e}")
+
+
+def get_valid_classifiers_from_db():
+    try:
+        mycursor.execute("SELECT DISTINCT kodeAnggota FROM usermstr")
+        valid_classifiers = mycursor.fetchall()
+        return [f"classifier_{classifier[0]}.xml" for classifier in valid_classifiers]
+    except Exception as e:
+        print(f"Failed to fetch valid classifiers from database: {e}")
+        return []
+
 
 def list_classifiers_in_cloudflare():
     try:
@@ -41,44 +50,40 @@ def list_classifiers_in_cloudflare():
         print(f"Failed to list classifiers in Cloudflare: {e}")
         return []
 
-def delete_local_classifiers_not_in_cloudflare():
-    cloudflare_files = list_classifiers_in_cloudflare()
+
+def delete_local_classifiers_not_in_db(valid_classifiers):
     local_files = [f for f in os.listdir(classifier_dir) if f.startswith("classifier_") and f.endswith(".xml")]
 
     for local_file in local_files:
-        if local_file not in cloudflare_files:
+        if local_file not in valid_classifiers:
             try:
                 os.remove(os.path.join(classifier_dir, local_file))
-                print(f"Deleted local classifier {local_file} as it is not present in Cloudflare.")
+                print(f"Deleted local classifier {local_file} as it is not present in the database.")
             except Exception as e:
                 print(f"Failed to delete local classifier {local_file}: {e}")
 
+
 def load_classifiers():
-    delete_local_classifiers_not_in_cloudflare()
+    valid_classifiers = get_valid_classifiers_from_db()
+    delete_local_classifiers_not_in_db(valid_classifiers)
     
     classifiers = []
     cloudflare_files = list_classifiers_in_cloudflare()
 
-    for file in os.listdir(classifier_dir):
-        if file.startswith("classifier_") and file.endswith(".xml"):
-            clf = cv2.face.LBPHFaceRecognizer_create()
-            clf.read(os.path.join(classifier_dir, file))
-            classifiers.append(clf)
-
-    for classifier_file in cloudflare_files:
+    for classifier_file in valid_classifiers:
         local_path = os.path.join(classifier_dir, classifier_file)
-        if not os.path.exists(local_path):
+        if not os.path.exists(local_path) and classifier_file in cloudflare_files:
             download_from_s3(bucket_name, f"classifiers/{classifier_file}", local_path)
+            clf = cv2.face.LBPHFaceRecognizer_create()
+            clf.read(local_path)
+            classifiers.append(clf)
+        elif os.path.exists(local_path):
             clf = cv2.face.LBPHFaceRecognizer_create()
             clf.read(local_path)
             classifiers.append(clf)
 
     return classifiers
 
-def get_person_numbers_from_db():
-    mycursor.execute("SELECT DISTINCT kodeAnggota FROM img_dataset")
-    rows = mycursor.fetchall()
-    return [row[0] for row in rows]
 
 faceCascade = cv2.CascadeClassifier(os.path.join("faceRecognition_files", "resources", "haarcascade_frontalface_default.xml"))
 classifiers = load_classifiers()
@@ -113,6 +118,7 @@ def process_camera_stream(socketio, stop_event):
     cap.release()
     cv2.destroyAllWindows()
 
+
 def detect_faces(img, classifier, scaleFactor, minNeighbors, clfs):
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     features = classifier.detectMultiScale(gray_image, scaleFactor, minNeighbors)
@@ -133,10 +139,7 @@ def detect_faces(img, classifier, scaleFactor, minNeighbors, clfs):
                 best_confidence = confidence
                 best_id = id
 
-        mycursor.execute("SELECT b.kodeAnggota, b.nama, b.nim, b.gen "
-                         "FROM img_dataset a "
-                         "LEFT JOIN usermstr b ON a.kodeAnggota = b.kodeAnggota "
-                         "WHERE a.img_id = %s", (best_id,))
+        mycursor.execute("SELECT kodeAnggota, nama, nim, gen FROM usermstr WHERE kodeAnggota = %s", (best_id,))
         s = mycursor.fetchone()
 
         result = {
@@ -150,9 +153,3 @@ def detect_faces(img, classifier, scaleFactor, minNeighbors, clfs):
         coords.append(result)
 
     return coords
-
- 
-
-
- 
-
