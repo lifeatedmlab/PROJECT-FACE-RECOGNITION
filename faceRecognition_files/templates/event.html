@@ -127,13 +127,6 @@
               <td>{{ event[1] }}</td>
               <td>{{ event[2] }}</td>
               <td class="actions">
-                <!-- <button
-                  class="view-link"
-                  onclick="location.reload()"
-                  href="{{ url_for('editEvent', eventID=eventID) }}"
-                >
-                  Edit
-                </button> -->
                 <button
                   class="delete-btn"
                   onclick="confirmDelete('{{ event[0] }}')"
