@@ -144,6 +144,63 @@
                 padding: 6px 12px;
             }
         }
+            /* The Modal (background) */
+        .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            background-color: #FF6E5A;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: medium;
+            border-radius: 5px;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -175,7 +232,16 @@
                 <button onclick="submitAttendance()">Submit</button>
             </div>
         </div>
-    </div>
+        <div id="resultModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <p id="modalMessage"></p>
+                <div class="modal-actions">
+                    <button id="absenAgain">Absen Lagi</button>
+                    <button id="goHome">Balik ke Home</button>
+                </div>
+            </div>
+        </div>
     <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
     <script>
         let socket = null;
@@ -209,6 +275,8 @@
                     socket.disconnect();
                 }
             });
+
+            
         });
 
         function getQueryParams() {
@@ -217,6 +285,35 @@
                         eventId: urlParams.get('eventId')
                     };
                 }
+        
+            const modal = document.getElementById("resultModal");
+        const closeModal = document.getElementById("closeModal");
+        const absenAgain = document.getElementById("absenAgain");
+        const goHome = document.getElementById("goHome");
+        const modalMessage = document.getElementById("modalMessage");
+
+        function showModal(message) {
+            modalMessage.textContent = message;
+            modal.style.display = "block";
+        }
+
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        absenAgain.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        goHome.onclick = function() {
+            window.location.href = "/"; // Adjust the URL to your home page
+        }
 
         function submitAttendance() {
             const queryParams = getQueryParams();
@@ -239,13 +336,366 @@
             })
             .then(data => {
                 console.log('Success:', data);
-                alert('Absensi berhasil');
+                showModal('Absensi berhasil');
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert(error.message);
+                showModal(error.message);
             });
         }
     </script>
 </body>
 </html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi - EDE Laboratory</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        h1 {
+            color: #200463;
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 2rem;
+        }
+        .container {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 100%;
+            overflow: auto;
+        }
+        .webcam-container, .summary-container {
+            box-sizing: border-box;
+        }
+        .webcam-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60%;
+            max-width: 952px;
+            height: 615px;
+            border: 3px solid #200463;
+            flex-shrink: 0;
+        }
+        .img-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .summary-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            width: 40%;
+            max-width: 624px;
+            height: 328px;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+        .summary h2 {
+            text-align: center;
+            color: #200463;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: left;
+            font-size: 16px;
+            font-weight: medium;
+            color: #1F1F1F;
+        }
+        .content {
+            text-align: right;
+            font-size: 16px;
+            color: #1F1F1F;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .action {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .action button {
+            background-color: #FF6E5A;
+            color: #FFFFFF;
+            font-size: 24px;
+            font-weight: medium;
+            text-align: center;
+            border-radius: 5px;
+            border: none;
+            padding: 10px 20px;
+        }
+        .action button:active {
+            background-color: #FF6E5A;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 1024px) {
+            .webcam-container {
+                width: 60%;
+                height: auto;
+            }
+            .summary-container {
+                width: 40%;
+                height: auto;
+            }
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+                margin-bottom: 1.5rem;
+            }
+            .container {
+                padding: 10px;
+            }
+            .webcam-container {
+                width: 55%;
+                height: auto;
+            }
+            .summary-container {
+                width: 45%;
+                height: auto;
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 28px;
+                margin-bottom: 1rem;
+            }
+            .summary h2 {
+                font-size: 18px;
+            }
+            .header, .content {
+                font-size: 14px;
+            }
+            .action button {
+                font-size: 18px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            background-color: #FF6E5A;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: medium;
+            border-radius: 5px;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    {% include "navbar.html" %}
+    <h1>Absen Anggota</h1>
+    <div class="container">
+        <div class="webcam-container">
+            <img id="video-feed" class="img-thumbnail" alt="webcam">
+        </div>
+        <div class="summary-container">
+            <h2>Summary</h2>
+            <div class="summary-item">
+                <p class="header">Kode Anggota</p>
+                <p id="kode-anggota" class="content">Loading...</p>
+            </div>
+            <div class="summary-item">
+                <p class="header">Nama</p>
+                <p id="nama" class="content">Loading...</p>
+            </div>
+            <div class="summary-item">
+                <p class="header">NIM</p>
+                <p id="nim" class="content">Loading...</p>
+            </div>
+            <div class="summary-item">
+                <p class="header">Generation</p>
+                <p id="generation" class="content">Loading...</p>
+            </div>
+            <div class="action">
+                <button onclick="submitAttendance()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    Modal HTML -->
+    <!-- <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <p id="modalMessage"></p>
+            <div class="modal-actions">
+                <button id="absenAgain">Absen Lagi</button>
+                <button id="goHome">Balik ke Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const modal = document.getElementById("resultModal");
+            const closeModal = document.getElementById("closeModal");
+            const absenAgain = document.getElementById("absenAgain");
+            const goHome = document.getElementById("goHome");
+            const modalMessage = document.getElementById("modalMessage");
+
+            function showModal(message) {
+                modalMessage.textContent = message;
+                modal.style.display = "block";
+            }
+
+            closeModal.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            absenAgain.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            goHome.onclick = function() {
+                window.location.href = "/home"; // Adjust the URL to your home page
+            }
+
+            let socket = null;
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/video');
+
+            socket.on('video_frame', (frame) => {
+                const img = document.getElementById('video-feed');
+                img.src = 'data:image/jpeg;base64,' + frame;
+            });
+
+            socket.on('summary', (data) => {
+                document.getElementById('kode-anggota').textContent = data.kodeAnggota;
+                document.getElementById('nama').textContent = data.nama;
+                document.getElementById('nim').textContent = data.nim;
+                document.getElementById('generation').textContent = data.gen;
+            });
+
+            socket.on('connect', () => {
+                console.log('Connected to server');
+                socket.emit('request_video');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Disconnected from server');
+            });
+
+            window.addEventListener('beforeunload', () => {
+                if (socket) {
+                    socket.disconnect();
+                }
+            });
+
+            function getQueryParams() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return {
+                    eventId: urlParams.get('eventId')
+                };
+            }
+
+            function submitAttendance() {
+                const queryParams = getQueryParams();
+                const eventId = queryParams.eventId;
+                const kodeAnggota = document.getElementById('kode-anggota').textContent;
+
+                fetch('/submit_absensi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ kodeAnggota: kodeAnggota, eventId: eventId })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Absensi belum berhasil');
+                    }
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    showModal('Absensi berhasil');
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    showModal(error.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html> -->
+
+
