@@ -89,6 +89,7 @@ classifiers = load_classifiers()
 
 
 def process_camera_stream(socketio, stop_event):
+    classifiers = load_classifiers()
     global cap
     cap = cv2.VideoCapture(0) 
     if not cap.isOpened():
