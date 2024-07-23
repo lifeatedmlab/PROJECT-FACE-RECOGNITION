@@ -84,7 +84,6 @@ def load_classifiers():
 
     return classifiers
 
-
 faceCascade = cv2.CascadeClassifier(os.path.join("faceRecognition_files", "resources", "haarcascade_frontalface_default.xml"))
 classifiers = load_classifiers()
 
@@ -118,7 +117,6 @@ def process_camera_stream(socketio, stop_event):
     cap.release()
     cv2.destroyAllWindows()
 
-
 def detect_faces(img, classifier, scaleFactor, minNeighbors, clfs):
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     features = classifier.detectMultiScale(gray_image, scaleFactor, minNeighbors)
@@ -139,7 +137,10 @@ def detect_faces(img, classifier, scaleFactor, minNeighbors, clfs):
                 best_confidence = confidence
                 best_id = id
 
-        mycursor.execute("SELECT kodeAnggota, nama, nim, gen FROM usermstr WHERE kodeAnggota = %s", (best_id,))
+        mycursor.execute("SELECT b.kodeAnggota, b.nama, b.nim, b.gen "
+                         "FROM img_dataset a "
+                         "LEFT JOIN usermstr b ON a.kodeAnggota = b.kodeAnggota "
+                         "WHERE a.img_id = %s", (best_id,))
         s = mycursor.fetchone()
 
         result = {
