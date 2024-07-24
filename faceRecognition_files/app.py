@@ -12,8 +12,9 @@ from enum import Enum
 from flask_socketio import SocketIO, emit
 from threading import Event
 from datetime import datetime
-from absensi import add_attendance
+from absensi import add_attendance, check_if_already_absent
 import pytz
+import boto3
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -22,6 +23,8 @@ stop_event = Event()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 class Generation(Enum):
     GEN4 = '4'
@@ -32,6 +35,14 @@ class User(UserMixin):
     def __init__(self, id, is_admin):
         self.id = id
         self.is_admin = is_admin
+
+s3 = boto3.client('s3',
+                  endpoint_url='https://a1c30d551c1d5963fc6afe44c3a6777c.r2.cloudflarestorage.com',
+                  region_name='apac',
+                  aws_access_key_id='d1862c406a16ad26eba46f3bcaa30f62',
+                  aws_secret_access_key='2546d0a0d348fe0460924bedda9fa1213a5c7e26fc312cd82ed0a6eeb65c41bc')
+
+bucket_name = 'imgdataset'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -46,6 +57,7 @@ def home():
     return render_template('index.html', current_url=request.path)
 
 @app.route('/data_anggota')
+@login_required
 def dataanggota():
     mycursor.execute("SELECT kodeAnggota, nama, nim, gen FROM usermstr")
     data = mycursor.fetchall()
@@ -69,6 +81,7 @@ def login():
     return render_template('login.html', error=error)
 
 @app.route('/logout', methods=['GET'])
+@login_required
 def logout():
     if current_user.is_authenticated:
         logout_user()
@@ -158,7 +171,7 @@ def train_classifier_route(kodeAnggota):
 @app.route('/event')
 @login_required
 def event():
-    mycursor.execute("SELECT kodeAcara, namaEvent, waktuAcara FROM eventmstr")
+    mycursor.execute("SELECT eventId, kodeAcara, namaEvent, waktuAcara FROM eventmstr")
     events = mycursor.fetchall()
     return render_template('event.html', events=events, current_url=request.path)
 
@@ -203,6 +216,7 @@ def check_passkey():
         return jsonify({'status': 'fail', 'message': 'Incorrect passkey'})
     
 @app.route('/absensi_event')
+@login_required
 def absensi_event():
     mycursor.execute("SELECT eventId, namaEvent FROM eventmstr")
     events = mycursor.fetchall()
@@ -210,7 +224,6 @@ def absensi_event():
 
 
 @app.route('/submit_absensi', methods=['POST'])
-# @login_required
 def submit_absensi():
     data = request.json
     waktu_sekarang_utc = datetime.now(pytz.utc)
@@ -220,6 +233,9 @@ def submit_absensi():
     
     kodeAnggota = data['kodeAnggota']
     eventId = data['eventId']
+
+    if check_if_already_absent(eventId, kodeAnggota):
+        return jsonify({'message': 'Anggota sudah absen untuk event ini'}), 400
 
     add_attendance(eventId, kodeAnggota,  waktu_sekarang_wib)
     
@@ -259,16 +275,68 @@ def get_absensi():
     return jsonify({'status': 'success', 'data': absensi_data}), 200
 
 @app.route('/index/<kodeAnggota>', methods=['DELETE'])
+@login_required
 def delete_data(kodeAnggota):
     try:
+        mycursor.execute("DELETE FROM absensi WHERE kodeAnggota = %s", (kodeAnggota,))
         mycursor.execute("DELETE FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
         mycursor.execute("DELETE FROM usermstr WHERE kodeAnggota = %s", (kodeAnggota,))
+
         mydb.commit()
-        
+
+        classifier_file = os.path.join(current_dir, "faceRecognition_files", f"classifier_{kodeAnggota}.xml")
+
+        if os.path.exists(classifier_file):
+            os.remove(classifier_file)
+            print(f"Deleted local classifier {classifier_file}")
+
+        s3_key = f"classifiers/classifier_{kodeAnggota}.xml"
+        try:
+            s3.delete_object(Bucket=bucket_name, Key=s3_key)
+            print(f"Deleted classifier {s3_key} from Cloudflare")
+        except Exception as e:
+            print(f"Failed to delete {s3_key} from Cloudflare: {e}")
+
         return jsonify({'success': True, 'message': f"Data for kodeAnggota {kodeAnggota} deleted successfully."})
     except Exception as e:
         mydb.rollback()
+        return jsonify({'success': False, 'message': f"Failed to delete: {e}"})
+
+    
+@app.route('/event/<eventID>', methods=['DELETE'])
+@login_required
+def delete_data_event(eventID):
+    try:
+        logging.debug(f"Attempting to delete event with ID: {eventID}")
+        mycursor.execute("SELECT eventID FROM eventmstr WHERE eventID = %s", (eventID,))
+        event = mycursor.fetchone()
+        
+        if event is None:
+            logging.warning(f"Event ID {eventID} does not exist in the database.")
+            return jsonify({'success': False, 'message': f"Event ID {eventID} not found in the database."}), 404
+        mycursor.execute("START TRANSACTION")
+        mycursor.execute("DELETE FROM absensi WHERE eventID = %s", (eventID,))
+        mycursor.execute("DELETE FROM eventmstr WHERE eventID = %s", (eventID,))
+        mydb.commit()
+        
+        logging.info(f"Data for event ID {eventID} deleted successfully.")
+        return jsonify({'success': True, 'message': f"Data for {eventID} deleted successfully."})
+    except Exception as e:
+        logging.error(f"Error deleting event with ID: {eventID} - {e}")
+        mydb.rollback()
         return jsonify({'success': False, 'message': str(e)})
+
+# @app.route('/editEvent/<eventID>')
+# def editEvent(eventID):
+#     delete_dataset(eventID)
+#     mycursor.execute("SELECT eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara FROM eventmstr WHERE eventID = %s", (eventID,))
+#     event_data = mycursor.fetchone()
+    
+#     if event_data:
+#         eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara = event_data
+#     else:
+#         eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara = '', '', '', '', ''
+#     return redirect(url_for('data_event', eventID=eventID, kodeAdmin=kodeAdmin, namaEvent=namaEvent, waktuAcara=waktuAcara))
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

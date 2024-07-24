@@ -106,14 +106,14 @@
                   href="{{ url_for('retry_dataset', kodeAnggota=kodeAnggota) }}"
                   class="btn"
                   style="background-color: #200463; color: white"
-                ><b>Retry</b></a>
+                  ><b>Retry</b></a
+                >
                 <a
                   class="btn"
                   style="background-color: #ff6e5a; color: white"
                   href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
+                  ><b> Submit </b></a
                 >
-                  Submit
-                </a>
               </div>
             </div>
           </div>
@@ -124,17 +124,17 @@
     <script>
       function retryDataset(kodeAnggota) {
         fetch(`/retry_dataset/${kodeAnggota}`, {
-          method: 'DELETE',
+          method: "DELETE",
         })
-          .then(response => response.json())
-          .then(data => {
+          .then((response) => response.json())
+          .then((data) => {
             if (data.success) {
               location.reload();
             } else {
               alert(data.message);
             }
           })
-          .catch(error => console.error('Error:', error));
+          .catch((error) => console.error("Error:", error));
       }
     </script>
   </body>

@@ -247,34 +247,36 @@
         let socket = null;
 
         document.addEventListener("DOMContentLoaded", () => {
-            socket = io.connect('http://' + document.domain + ':' + location.port + '/video');
+            function startVideoStream() {
+                socket = io.connect('http://' + document.domain + ':' + location.port + '/video');
 
-            socket.on('video_frame', (frame) => {
-                const img = document.getElementById('video-feed');
-                img.src = 'data:image/jpeg;base64,' + frame;
-            });
+                socket.on('video_frame', (frame) => {
+                    const img = document.getElementById('video-feed');
+                    img.src = 'data:image/jpeg;base64,' + frame;
+                });
 
-            socket.on('summary', (data) => {
-                document.getElementById('kode-anggota').textContent = data.kodeAnggota;
-                document.getElementById('nama').textContent = data.nama;
-                document.getElementById('nim').textContent = data.nim;
-                document.getElementById('generation').textContent = data.gen;
-            });
+                socket.on('summary', (data) => {
+                    document.getElementById('kode-anggota').textContent = data.kodeAnggota;
+                    document.getElementById('nama').textContent = data.nama;
+                    document.getElementById('nim').textContent = data.nim;
+                    document.getElementById('generation').textContent = data.gen;
+                });
 
-            socket.on('connect', () => {
-                console.log('Connected to server');
-                socket.emit('request_video');
-            });
+                socket.on('connect', () => {
+                    console.log('Connected to server');
+                    socket.emit('request_video');
+                });
 
-            socket.on('disconnect', () => {
-                console.log('Disconnected from server');
-            });
+                socket.on('disconnect', () => {
+                    console.log('Disconnected from server');
+                });
 
-            window.addEventListener('beforeunload', () => {
-                if (socket) {
-                    socket.disconnect();
-                }
-            });
+                window.addEventListener('beforeunload', () => {
+                    if (socket) {
+                        socket.disconnect();
+                    }
+                });
+            }
 
             
         });
@@ -286,7 +288,7 @@
                     };
                 }
         
-            const modal = document.getElementById("resultModal");
+        const modal = document.getElementById("resultModal");
         const closeModal = document.getElementById("closeModal");
         const absenAgain = document.getElementById("absenAgain");
         const goHome = document.getElementById("goHome");
@@ -295,6 +297,9 @@
         function showModal(message) {
             modalMessage.textContent = message;
             modal.style.display = "block";
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
         }
 
         closeModal.onclick = function() {
@@ -304,11 +309,13 @@
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+                resumeVideoStream();
             }
         }
 
         absenAgain.onclick = function() {
             modal.style.display = "none";
+
         }
 
         goHome.onclick = function() {
