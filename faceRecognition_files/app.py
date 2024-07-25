@@ -196,7 +196,9 @@ def event_register():
 
 @app.route('/absensi')
 def absensi():
-    return render_template('absensi.html', current_url=request.path)
+    if 'eventId' not in session:
+        return redirect(url_for('select_event')) 
+    return render_template('absensi.html', eventId=session['eventId'])
 
 @app.route('/select_event')
 def select_event():
@@ -211,6 +213,7 @@ def check_passkey():
     mycursor.execute("SELECT kodeAcara, eventId FROM eventmstr WHERE kodeAcara = %s", (kode_acara,))
     result = mycursor.fetchone()
     if result and result[0] == passkey:
+        session['eventId'] = result[1]
         return jsonify({'status': 'success', 'message': 'Passkey is correct', 'eventId': result[1]})
     else:
         return jsonify({'status': 'fail', 'message': 'Incorrect passkey'})
@@ -225,21 +228,24 @@ def absensi_event():
 
 @app.route('/submit_absensi', methods=['POST'])
 def submit_absensi():
+    if 'eventId' not in session:
+        return jsonify({'message': 'Unauthorized'}), 403
+    
     data = request.json
     waktu_sekarang_utc = datetime.now(pytz.utc)
-    
     jakarta_tz = pytz.timezone('Asia/Jakarta')
     waktu_sekarang_wib = waktu_sekarang_utc.astimezone(jakarta_tz).strftime('%Y-%m-%d %H:%M:%S')
     
     kodeAnggota = data['kodeAnggota']
-    eventId = data['eventId']
+    eventId = session['eventId']
 
     if check_if_already_absent(eventId, kodeAnggota):
         return jsonify({'message': 'Anggota sudah absen untuk event ini'}), 400
 
     add_attendance(eventId, kodeAnggota,  waktu_sekarang_wib)
     
-    return jsonify({'message': 'Data saved successfully',  'waktu': waktu_sekarang_wib}), 200
+    return jsonify({'message': 'Data saved successfully', 'waktu': waktu_sekarang_wib}), 200
+
 
 @app.route('/get_absensi', methods=['GET'])
 @login_required

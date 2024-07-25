@@ -144,22 +144,22 @@
                 padding: 6px 12px;
             }
         }
-            /* The Modal (background) */
+
         .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            display: none; 
+            position: fixed;
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4); 
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Modal Content */
+
         .modal-content {
             background-color: #fefefe;
             margin: auto;
@@ -168,9 +168,10 @@
             width: 80%;
             max-width: 600px;
             text-align: center;
+            border-radius: 20px;
         }
 
-        /* The Close Button */
+        
         .close {
             color: #aaa;
             float: right;
@@ -191,15 +192,26 @@
             margin-top: 20px;
         }
 
-        .modal-actions button {
-            background-color: #FF6E5A;
-            color: #FFFFFF;
-            font-size: 18px;
-            font-weight: medium;
-            border-radius: 5px;
+        #absenAgain {
+        background-color: #FF6E5A;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        }
+
+        #goHome {
+            background-color: #200463;
+            color: white;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #absenAgain:hover, #goHome:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -245,6 +257,7 @@
     <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
     <script>
         let socket = null;
+        let videoStream = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             function startVideoStream() {
@@ -278,6 +291,15 @@
                 });
             }
 
+        function resumeVideoStream() {
+            if (socket) {
+                socket.disconnect();
+            }
+            startVideoStream();
+        }
+
+        startVideoStream();
+
             
         });
 
@@ -296,14 +318,16 @@
 
         function showModal(message) {
             modalMessage.textContent = message;
-            modal.style.display = "block";
+            modal.style.display = "flex";
             if (videoStream) {
                 videoStream.getTracks().forEach(track => track.stop());
             }
         }
 
+
         closeModal.onclick = function() {
             modal.style.display = "none";
+            resumeVideoStream();
         }
 
         window.onclick = function(event) {
@@ -315,7 +339,7 @@
 
         absenAgain.onclick = function() {
             modal.style.display = "none";
-
+            resumeVideoStream();
         }
 
         goHome.onclick = function() {
@@ -335,11 +359,12 @@
                 body: JSON.stringify({ kodeAnggota: kodeAnggota, eventId: eventId })
             })
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
+                if (response.status === 400) {
+                    throw new Error('Anggota sudah absen untuk event ini');
+                } else if (!response.ok) {
                     throw new Error('Absensi belum berhasil');
                 }
+                return response.json();
             })
             .then(data => {
                 console.log('Success:', data);
