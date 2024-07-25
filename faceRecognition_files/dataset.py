@@ -96,3 +96,9 @@ def dbdataset(kodeAnggota):
         mydb.commit
         if cv2.waitKey(1) == 13 or int(img_id) == int(max_imgid):
             break
+def count_images(kodeAnggota):
+    count = 0
+    for file_name in os.listdir(dataset_dir):
+        if file_name.startswith(f"{kodeAnggota}.") and file_name.endswith(".jpg"):
+            count += 1
+    return count

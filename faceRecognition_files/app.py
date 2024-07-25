@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from database import mydb, mycursor
-from dataset import generate_dataset, delete_dataset, dbdataset
+from dataset import generate_dataset, delete_dataset, dbdataset, count_images
 from face_recognition import process_camera_stream
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
@@ -172,14 +172,27 @@ def handle_disconnect():
 
 @app.route('/train_classifier/<kodeAnggota>')
 def train_classifier_route(kodeAnggota):
-    if 'kodeAnggota' in session and session['kodeAnggota'] == kodeAnggota:
-        add_person(session['kodeAnggota'], session['nama'], session['nim'], session['gen'])
-        dbdataset(kodeAnggota)
-        session.pop('kodeAnggota')
-        session.pop('nama')
-        session.pop('nim')
-        session.pop('gen')
-    return train_classifier(kodeAnggota)
+    count = count_images(kodeAnggota)
+    if count < 100 or count > 100:
+        if 'kodeAnggota' in session and session['kodeAnggota'] == kodeAnggota:
+            nama = session['nama']
+            nim = session['nim']
+            gen = session['gen']
+        else:
+            session.pop('kodeAnggota', None)
+            session.pop('nama', None)
+            session.pop('nim', None)
+            session.pop('gen', None)
+        return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
+    else:
+        if 'kodeAnggota' in session and session['kodeAnggota'] == kodeAnggota:
+            add_person(session['kodeAnggota'], session['nama'], session['nim'], session['gen'])
+            dbdataset(kodeAnggota)
+            session.pop('kodeAnggota')
+            session.pop('nama')
+            session.pop('nim')
+            session.pop('gen')
+        return train_classifier(kodeAnggota)
 
 @app.route('/event')
 @login_required
