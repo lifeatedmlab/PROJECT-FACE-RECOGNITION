@@ -64,22 +64,29 @@ def generate_dataset(kodeAnggota):
     cv2.destroyAllWindows()
     
 def delete_dataset(kodeAnggota):
-    mycursor.execute("SELECT img_id FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
-    rows = mycursor.fetchall()
+    mycursor.execute("SELECT IFNULL(MAX(img_id), 0) FROM img_dataset")
+    row = mycursor.fetchone()
+    lastid = row[0]
 
-    for row in rows:
-        img_id = row[0]
+    img_id = lastid
+    max_imgid = img_id + 100
+    while True:
+        img_id += 1
         file_name_path = os.path.join(dataset_dir, f"{kodeAnggota}.{img_id}.jpg")
         if os.path.exists(file_name_path):
             os.remove(file_name_path)
+        else:
+            break
 
+        if cv2.waitKey(1) == 13 or int(img_id) == int(max_imgid):
+            break
 
 def dbdataset(kodeAnggota):
     mycursor.execute("SELECT IFNULL(MAX(img_id), 0) FROM img_dataset")
     row = mycursor.fetchone()
     lastid = row[0]
 
-    img_id = lastid - 100
+    img_id = lastid
     max_imgid = img_id + 100
     count_img = 0
     while True:
