@@ -51,9 +51,6 @@ def generate_dataset(kodeAnggota):
             cv2.imwrite(file_name_path, face)
             cv2.putText(face, str(count_img), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
 
-            mycursor.execute("""INSERT INTO img_dataset (img_id, kodeAnggota) VALUES (%s, %s)""", (img_id, kodeAnggota))
-            mydb.commit()
-
             frame = cv2.imencode('.jpg', face)[1].tobytes()
             yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
@@ -76,5 +73,19 @@ def delete_dataset(kodeAnggota):
         if os.path.exists(file_name_path):
             os.remove(file_name_path)
 
-    mycursor.execute("DELETE FROM img_dataset WHERE kodeAnggota = %s", (kodeAnggota,))
-    mydb.commit()
+
+def dbdataset(kodeAnggota):
+    mycursor.execute("SELECT IFNULL(MAX(img_id), 0) FROM img_dataset")
+    row = mycursor.fetchone()
+    lastid = row[0]
+
+    img_id = lastid - 100
+    max_imgid = img_id + 100
+    count_img = 0
+    while True:
+        count_img += 1
+        img_id += 1
+        mycursor.execute("""INSERT INTO img_dataset (img_id, kodeAnggota) VALUES (%s, %s)""", (img_id, kodeAnggota))
+        mydb.commit
+        if cv2.waitKey(1) == 13 or int(img_id) == int(max_imgid):
+            break

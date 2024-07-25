@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, Response, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from database import mydb, mycursor
-from dataset import generate_dataset, delete_dataset
+from dataset import generate_dataset, delete_dataset, dbdataset
 from face_recognition import process_camera_stream
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
@@ -124,7 +124,11 @@ def addprsn_submit():
         flash(f'Kode Anggota {kodeAnggota} sudah ada. Silakan gunakan kode yang lain.', 'error')
         return redirect(url_for('addprsn'))
 
-    add_person(kodeAnggota, nama, nim, gen)
+    session['kodeAnggota'] = kodeAnggota
+    session['nama'] = nama
+    session['nim'] = nim
+    session['gen'] = gen
+
     return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
 
 @app.route('/vfdataset_page/<kodeAnggota>')
@@ -137,13 +141,15 @@ def vfdataset_page(kodeAnggota):
 @app.route('/retry_dataset/<kodeAnggota>')
 def retry_dataset(kodeAnggota):
     delete_dataset(kodeAnggota)
-    mycursor.execute("SELECT nama, nim, gen FROM usermstr WHERE kodeAnggota = %s", (kodeAnggota,))
-    user_data = mycursor.fetchone()
-    
-    if user_data:
-        nama, nim, gen = user_data
+    if 'kodeAnggota' in session and session['kodeAnggota'] == kodeAnggota:
+        nama = session['nama']
+        nim = session['nim']
+        gen = session['gen']
     else:
-        nama, nim, gen = '', '', ''
+        session.pop('kodeAnggota', None)
+        session.pop('nama', None)
+        session.pop('nim', None)
+        session.pop('gen', None)
     return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
 
 
@@ -166,6 +172,13 @@ def handle_disconnect():
 
 @app.route('/train_classifier/<kodeAnggota>')
 def train_classifier_route(kodeAnggota):
+    if 'kodeAnggota' in session and session['kodeAnggota'] == kodeAnggota:
+        add_person(session['kodeAnggota'], session['nama'], session['nim'], session['gen'])
+        dbdataset(kodeAnggota)
+        session.pop('kodeAnggota')
+        session.pop('nama')
+        session.pop('nim')
+        session.pop('gen')
     return train_classifier(kodeAnggota)
 
 @app.route('/event')
