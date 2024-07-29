@@ -13,5 +13,6 @@ def add_event(kodeAcara, namaEvent, waktuAcara, kodeAdmin):
         print(f"Error adding event: {str(e)}")
         mydb.rollback()
 
+
 def generate_event_id():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
