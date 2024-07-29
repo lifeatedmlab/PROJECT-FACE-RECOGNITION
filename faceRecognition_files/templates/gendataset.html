@@ -10,9 +10,16 @@
         height: 100vh; /* Adjust as needed */
         text-align: center;
       }
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 20px;
+        color: #333;
+    }
+
     </style>
   </head>
-  <body style="background-color: #f4f6fc">
+  <body style="background-color: #F4F6FC">
     {% include "navbar.html" %}
 
     <section class="py-1">
@@ -20,8 +27,11 @@
         style="
           text-align: center;
           color: #200463;
-          margin: 20px 0;
-          padding: 10px;
+          margin-top: 1rem;
+          font-size: 40px;
+          font-family: 'Inter';
+          padding: 2rem;
+          font-weight: 600;
         "
       >
         Pendaftaran Wajah {{ kodeAnggota }}
@@ -43,31 +53,31 @@
           >
             <form>
               <div class="text-left mb-3">
-                <label for="exampleInputEmail1" class="form-label">Nama</label>
+                <label for="exampleInputEmail1" class="label">Nama</label>
                 <input
                   type="email"
                   class="form-control"
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ nama }}"
-                  style="border-color: #200463; background-color: #f3f3f3"
+                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
                   readonly
                 />
               </div>
               <div class="text-left mb-3">
-                <label for="exampleInputEmail1" class="form-label">NIM</label>
+                <label for="exampleInputEmail1" class="label">NIM</label>
                 <input
                   type="email"
                   class="form-control"
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ nim }}"
-                  style="border-color: #200463; background-color: #f3f3f3"
+                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
                   readonly
                 />
               </div>
               <div class="text-left mb-3">
-                <label for="exampleInputEmail1" class="form-label"
+                <label for="exampleInputEmail1" class="label"
                   >Generation</label
                 >
                 <input
@@ -76,14 +86,14 @@
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ gen }}"
-                  style="border-color: #200463; background-color: #f3f3f3"
+                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
                   disabled
                 />
               </div>
               <div class="text-left mb-3">
                 <label
                   for="exampleInputEmail1"
-                  class="form-label"
+                  class="label"
                   style="text-align: left"
                   >Kode Anggota</label
                 >
@@ -93,7 +103,7 @@
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ kodeAnggota }}"
-                  style="border-color: #200463; background-color: #f3f3f3"
+                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
                   readonly
                 />
               </div>
@@ -105,12 +115,30 @@
                 <a
                   href="{{ url_for('retry_dataset', kodeAnggota=kodeAnggota) }}"
                   class="btn"
-                  style="background-color: #200463; color: white"
+                  style="   
+                  padding: 0.75rem 1.5rem;
+                  margin-top: 0.5rem;
+                  font-size: 16px;
+                  border: none;
+                  border-radius: 5px;
+                  cursor: pointer;
+                  background-color: #200463;
+                  font-weight: 300;
+                  color: white;"
                   ><b>Retry</b></a
                 >
                 <a
                   class="btn"
-                  style="background-color: #ff6e5a; color: white"
+                  style="          
+                  padding: 0.75rem 1.5rem;
+                  margin-top: 0.5rem;
+                  font-size: 16px;
+                  border: none;
+                  border-radius: 5px;
+                  cursor: pointer;
+                  background-color: #FF6E5A;
+                  font-weight: 300;
+                  color: white;"
                   href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
                   ><b> Submit </b></a
                 >

@@ -8,7 +8,7 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
+            background-color: #F4F6FC;
         }
         .content {
             padding: 2rem;
@@ -22,12 +22,28 @@
             font-size: 40px;
             margin-bottom: 2rem;
         }
+        .form-container {
+            margin: 0 auto 3rem auto;
+            width: 50%;
+        }
+        select#nama-event {
+            font-size: 20px;
+            width: 100%;
+            padding: 1rem;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        select#nama-event option {
+            font-size: 16px; 
+        }
         .table-container {
             background-color: #fff;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-top: 20px;
+            margin-top: 3rem;
         }
         table {
             width: 100%;
@@ -39,7 +55,7 @@
             text-align: left;
         }
         th {
-            background-color: #200463;
+            background-color: #2c0e54;
             color: white;
             font-weight: 500;
             font-size: 20px;
@@ -47,50 +63,7 @@
         td {
             font-size: 16px;
             border-bottom: 1px solid #ddd;
-        }
-        .form-container {
-            background-color: white;
-            width: 1139px;
-            border: 1.2px solid #200463;
-            border-radius: 8px;
-            padding: 5px;
-            position: relative;
-            margin-left: 7px;
-        }
-        .form-container::after {
-            content: '\2304';
-            position: absolute;
-            top: calc(20% - 5px); 
-            right: 10px; 
-            color: #200463; 
-            pointer-events: none; 
-        }
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-        select#nama-event {
-            font-size: 20px;
-            font-weight: bold;
             color: #200463;
-            width: 100%;
-            border: none;
-            outline: none;
-            background-color: transparent;
-            padding-right: 30px;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            position: relative
-        }
-        select#nama-event option {
-            font-size: 16px; 
         }
     </style>
 </head>
@@ -100,15 +73,12 @@
     <div class="content">
         <h1>Absen Anggota</h1>
         <div class="form-container">
-            <form>
-                <label for="nama-event" class="visually-hidden">Nama Event</label>
-                <select id="nama-event" name="nama-event" onchange="fetchAbsensi()">
-                    <option value="" disabled selected>Pilih nama event</option>
-                    {% for event in events %}
-                        <option value="{{ event[0] }}">{{ event[1] }}</option>
-                    {% endfor %}
-                </select>
-            </form>
+            <select id="nama-event" name="nama-event" onchange="fetchAbsensi()">
+                <option value="" disabled selected>Pilih nama event</option>
+                {% for event in events %}
+                    <option value="{{ event[0] }}">{{ event[1] }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="table-container">
             <table>

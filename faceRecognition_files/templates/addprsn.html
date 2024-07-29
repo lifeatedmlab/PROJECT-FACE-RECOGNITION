@@ -1,49 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    {% include "head.html" %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi Event - EDE Laboratory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-      .center-section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh; /* Adjust as needed */
-        text-align: center;
+        body {
+            font-family: 'Inter';
+            margin: 0;
+            padding: 0;
+            background-color: #F4F6FC;
+        }
+        .content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #200463;
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 2rem;
+        }
+        .form-container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 20px;
+            color: #333;
+        }
+        input[type="text"], input[type="date"], select {
+          width: 100%;
+          padding: 1rem;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          margin-bottom: 1.5rem;
+          box-sizing: border-box;
       }
+      .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        .next-btn {
+          padding: 0.75rem 1.5rem;
+          font-size: 16px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          background-color: #FF6E5A;
+          color: white;
+      }
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1rem;
+            }
+        }
     </style>
-  </head>
-  <body style="background-color: #f4f6fc">
+</head>
+  <body>
+    
     {% include "navbar.html" %}
 
-    <section class="py-1">
-      <section class="py-1">
-        <h3
-          style="
-            text-align: center;
-            color: #200463;
-            margin: 20px 0;
-            padding: 10px;
-          "
-        >
-          Pendaftaran Anggota
-        </h3>
-        <div class="container text-center">
-          <div class="row justify-content-center">
-            <div class="card col-md-6 pt-3 margin: 0 auto">
-              <form class="form" method="post" action="/addprsn_submit">
-                <div class="text-left mb-3">
-                  <label for="txtnama" class="form-label"
-                    >Nama Lengkap</label>
+    <div class="content">
+      <h1>Pendaftaran Anggota</h1>
+      <div class="form-container">
+            <form method="post" action="/addprsn_submit">
+                  <label for="txtnama" class="form-label">Nama Lengkap</label>
                     <input
                       type="text"
                       class="form-control"
                       id="txtnama"
                       name="txtnama"
-                      style="border-color: #200463; background-color: #f3f3f3"
                       required
                     />
-                </div>
-                <div class="text-left mb-3">
                   <label for="txtnim" class="form-label"
                     >NIM</label>
                     <input
@@ -51,48 +90,31 @@
                       class="form-control"
                       id="txtnim"
                       name="txtnim"
-                      style="border-color: #200463; background-color: #f3f3f3"
                       required
                     />
-                </div>
-                <div class="text-left mb-3">
-                  <label for="optgen" class="form-label">Generation</label>
-                  <div class="form-label">
-                    <select class="form-control" name="optgen" id="optgen" style="border-color: #200463; background-color: #f3f3f3"
-                    required>
-                      <option value="4">G4</option>
-                      <option value="5">G5</option>
-                      <option value="6">G6</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="text-left mb-3">
-                  <label for="txtkdag" class="form-label"
+                    <label for="optgen">Generation</label>
+                      <select name="optgen" id="optgen" 
+                      required>
+                      <option value="" disabled selected>Pilih Generation</option>
+                        <option value="4">G4</option>
+                        <option value="5">G5</option>
+                        <option value="6">G6</option>
+                      </select>
+                    <label for="txtkdag" class="form-label"
                     >Kode Anggota</label>
                     <input
                       type="text"
-                      class="form-control"
                       id="txtkdag"
                       name="txtkdag"
-                      style="border-color: #200463; background-color: #f3f3f3"
                       required
                     />
-                </div>
                 <!--Submit button-->
-                <div class="form-group row">
-                  <label class="col-sm-2 col-form-label"></label>
-                  <div class="col-sm-8">
-                    <a href="/" type="button" class="btn" style="background-color: #200463; color: white"
-                      ><b>Back</b></a
-                    >
+                <div class="buttons">
                     <input
                     type="submit"
-                    class="btn"
-                    style="background-color: #ff6e5a; color: white; font-weight: bold;"
+                    class="next-btn"
                     value="Next"
                   />
-
-                  </div>
                 </div>
               </form>
               {% with messages = get_flashed_messages(with_categories=true) %} {% if

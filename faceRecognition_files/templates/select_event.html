@@ -7,10 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter';
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
+            background-color: #F4F6FC;
         }
         .content {
             padding: 2rem;
@@ -18,7 +18,7 @@
             margin: 0 auto;
         }
         h1 {
-            color: #333;
+            color: #200463;
             text-align: center;
             font-size: 40px;
             margin-bottom: 2rem;
@@ -34,13 +34,13 @@
         label {
             display: block;
             margin-bottom: 0.5rem;
-            font-size: 18px;
+            font-size: 20px;
             color: #333;
         }
         input[type="text"], input[type="date"], select {
             width: 100%;
             padding: 1rem;
-            font-size: 18px;
+            font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
             margin-bottom: 1.5rem;
@@ -53,11 +53,11 @@
         }
         .next-btn {
             padding: 0.75rem 1.5rem;
-            font-size: 18px;
+            font-size: 16px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: #ff7f50;
+            background-color: #FF6E5A;
             color: white;
         }
         @media (max-width: 768px) {
@@ -106,7 +106,7 @@
             .then(data => {
                 if (data.status === 'success') {
                     const eventId = data.eventId;
-                    window.location.href = `/absensi?eventId=${data.eventId}`;
+                    window.location.href = '/absensi?eventId=' + eventId;
                 } else {
                     alert(data.message);
                 }
