@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
   <head>
     {% include "head.html" %}
     <style>
@@ -15,11 +24,10 @@
         margin-bottom: 0.5rem;
         font-size: 20px;
         color: #333;
-    }
-
+      }
     </style>
   </head>
-  <body style="background-color: #F4F6FC">
+  <body style="background-color: #f4f6fc">
     {% include "navbar.html" %}
 
     <section class="py-1">
@@ -36,6 +44,9 @@
       >
         Pendaftaran Wajah {{ kodeAnggota }}
       </h3>
+      <h5 style="color: red; text-align: center">
+        <i><b>Don't click the submit button until the number up to 100</b></i>
+      </h5>
       <div class="container text-center">
         <div class="row">
           <!--Record Wajah-->
@@ -51,7 +62,15 @@
           <div
             class="card col-md-6 pt-3 margin:0 auto; width: 570px; height: 468px;"
           >
-            <form>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label"></label>
+              <div class="col-sm-8">
+                <a href="{{ url_for('retry_dataset', kodeAnggota=kodeAnggota) }}" style="font-size:18px; color:#200463"><b>
+                  <span class="glyphicon" style="color:#200463; font-size: 18px">&#xe030</span> Retry </b>
+                </a>
+              </div>
+            </div>
+            <form id="registForm">
               <div class="text-left mb-3">
                 <label for="exampleInputEmail1" class="label">Nama</label>
                 <input
@@ -60,7 +79,11 @@
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ nama }}"
-                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
+                  style="
+                    font-size: 16px;
+                    border-color: #200463;
+                    background-color: #f3f3f3;
+                  "
                   readonly
                 />
               </div>
@@ -72,21 +95,27 @@
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ nim }}"
-                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
+                  style="
+                    font-size: 16px;
+                    border-color: #200463;
+                    background-color: #f3f3f3;
+                  "
                   readonly
                 />
               </div>
               <div class="text-left mb-3">
-                <label for="exampleInputEmail1" class="label"
-                  >Generation</label
-                >
+                <label for="exampleInputEmail1" class="label">Generation</label>
                 <input
                   type="email"
                   class="form-control"
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ gen }}"
-                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
+                  style="
+                    font-size: 16px;
+                    border-color: #200463;
+                    background-color: #f3f3f3;
+                  "
                   disabled
                 />
               </div>
@@ -103,7 +132,11 @@
                   id="exampleInputEmail1"
                   aria-describedby="emailHelp"
                   value="{{ kodeAnggota }}"
-                  style="font-size: 16px; border-color: #200463; background-color: #f3f3f3"
+                  style="
+                    font-size: 16px;
+                    border-color: #200463;
+                    background-color: #f3f3f3;
+                  "
                   readonly
                 />
               </div>
@@ -113,32 +146,35 @@
               <label class="col-sm-2 col-form-label"></label>
               <div class="col-sm-8">
                 <a
-                  href="{{ url_for('retry_dataset', kodeAnggota=kodeAnggota) }}"
+                  id="backButton"
+                  onclick="confirmBack('addprsn? nama=nama, nim=nim, gen=gen, kodeAnggota=kodeAnggota')"
                   class="btn"
-                  style="   
-                  padding: 0.75rem 1.5rem;
-                  margin-top: 0.5rem;
-                  font-size: 16px;
-                  border: none;
-                  border-radius: 5px;
-                  cursor: pointer;
-                  background-color: #200463;
-                  font-weight: 300;
-                  color: white;"
-                  ><b>Retry</b></a
+                  style="
+                    padding: 0.75rem 1.5rem;
+                    margin-top: 0.5rem;
+                    font-size: 16px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    background-color: #200463;
+                    font-weight: 300;
+                    color: white;
+                  "
+                  ><b>Back</b></a
                 >
                 <a
                   class="btn"
-                  style="          
-                  padding: 0.75rem 1.5rem;
-                  margin-top: 0.5rem;
-                  font-size: 16px;
-                  border: none;
-                  border-radius: 5px;
-                  cursor: pointer;
-                  background-color: #FF6E5A;
-                  font-weight: 300;
-                  color: white;"
+                  style="
+                    padding: 0.75rem 1.5rem;
+                    margin-top: 0.5rem;
+                    font-size: 16px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    background-color: #ff6e5a;
+                    font-weight: 300;
+                    color: white;
+                  "
                   href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
                   ><b> Submit </b></a
                 >
@@ -163,6 +199,17 @@
             }
           })
           .catch((error) => console.error("Error:", error));
+      }
+      function confirmBack(nama, nim, gen, kodeAnggota) {
+        if (confirm("This will caused the data your imputed before will be discarded. Are you sure you want to back to the previous page?")) {
+          const params = new URLSearchParams({
+            nama: nama,
+            nim: nim,
+            gen: gen,
+            kodeAnggota: kodeAnggota
+          }).toString();
+          window.location.href = `/addprsn?${params}`;
+        }
       }
     </script>
   </body>
