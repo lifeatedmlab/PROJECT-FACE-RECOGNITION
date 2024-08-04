@@ -15,6 +15,10 @@ from datetime import datetime
 from absensi import add_attendance, check_if_already_absent
 import pytz
 import boto3
+import pandas as pd
+from flask import send_file
+import io
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -309,6 +313,56 @@ def get_absensi():
         })
 
     return jsonify({'status': 'success', 'data': absensi_data}), 200
+
+import pandas as pd
+from flask import send_file
+import io
+from datetime import datetime
+
+@app.route('/download_absensi_xlsx', methods=['GET'])
+@login_required
+def download_absensi_xlsx():
+    event_id = request.args.get('eventId')
+    if not event_id:
+        return jsonify({'status': 'fail', 'message': 'eventId is required'}), 400
+
+    query_event = "SELECT namaEvent FROM eventmstr WHERE eventId = %s"
+    mycursor.execute(query_event, (event_id,))
+    event_name_result = mycursor.fetchone()
+    if not event_name_result:
+        return jsonify({'status': 'fail', 'message': 'Event not found'}), 404
+
+    event_name = event_name_result[0].replace(' ', '_')
+
+    query_absensi = """
+        SELECT 
+            u.kodeAnggota, u.nama, u.nim, u.gen, a.waktu 
+        FROM 
+            absensi a
+        JOIN 
+            usermstr u ON a.kodeAnggota = u.kodeAnggota
+        JOIN 
+            eventmstr e ON a.eventId = e.eventId
+        WHERE 
+            e.eventId = %s
+    """
+    mycursor.execute(query_absensi, (event_id,))
+    results = mycursor.fetchall()
+
+    df = pd.DataFrame(results, columns=['Kode Anggota', 'Nama Anggota', 'NIM', 'Generation', 'Waktu Absensi'])
+    df['Waktu Absensi'] = pd.to_datetime(df['Waktu Absensi']).dt.strftime('%Y-%m-%d %H:%M:%S')
+
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Absensi')
+
+    output.seek(0)
+
+    current_date = datetime.now().strftime('%Y-%m-%d')
+    filename = f'absensi_{event_name}_{current_date}.xlsx'
+
+    return send_file(output, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', as_attachment=True, download_name=filename)
+
 
 @app.route('/index/<kodeAnggota>', methods=['DELETE'])
 @login_required
