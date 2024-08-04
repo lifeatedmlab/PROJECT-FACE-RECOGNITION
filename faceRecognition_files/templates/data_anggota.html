@@ -128,6 +128,28 @@
         cursor: pointer;
         border-radius: 5px;
       }
+      .notification {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fefefe;
+        border: 2px solid #200463;
+        border-radius: 5px;
+        padding: 10px;
+        text-align: center;
+        width: 80%;
+        max-width: 400px;
+      }
+      .notification.success {
+        border-color: #200463;
+        color: #200463;
+      }
+      .notification.error {
+        border-color: #f44336;
+        color: #f44336;
+      }
     </style>
   </head>
   <body>
@@ -176,11 +198,14 @@
       </div>
     </div>
 
+    <div id="notification" class="notification"></div>
+
     <script>
       const modal = document.getElementById("resultModal");
       const closeModal = document.getElementById("closeModal");
       const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
       const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+      const notification = document.getElementById("notification");
       let currentKodeAnggota = null;
 
       function openDeleteModal(kodeAnggota) {
@@ -191,6 +216,15 @@
       function closeDeleteModal() {
         modal.style.display = "none";
         currentKodeAnggota = null;
+      }
+
+      function showNotification(message, isSuccess) {
+        notification.textContent = message;
+        notification.className = isSuccess ? 'notification success' : 'notification error';
+        notification.style.display = 'block';
+        setTimeout(() => {
+          notification.style.display = 'none';
+        }, 2000);
       }
 
       closeModal.onclick = closeDeleteModal;
@@ -214,15 +248,17 @@
           .then(data => {
             if (data.success) {
               document.querySelector(`tr[data-kode-anggota='${currentKodeAnggota}']`).remove();
-              closeDeleteModal();
-              alert(data.message);
+              showNotification(data.message, true);
             } else {
-              alert('Failed to delete: ' + data.message);
+              showNotification('Failed to delete: ' + data.message, false);
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            alert('Error deleting user');
+            showNotification('Error deleting user', false);
+          })
+          .finally(() => {
+            closeDeleteModal();
           });
         }
       };
