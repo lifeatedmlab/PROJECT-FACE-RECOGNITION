@@ -183,7 +183,7 @@ def train_classifier_route(kodeAnggota):
             session.pop('nama', None)
             session.pop('nim', None)
             session.pop('gen', None)
-        return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota))
+        return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota,nama=nama, nim=nim, gen=gen))
     else:
         if 'kodeAnggota' in session and session['kodeAnggota'] == kodeAnggota:
             add_person(session['kodeAnggota'], session['nama'], session['nim'], session['gen'])
