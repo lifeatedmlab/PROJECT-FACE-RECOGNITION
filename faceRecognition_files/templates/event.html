@@ -137,7 +137,7 @@
       justify-content: center;
       margin-top: 20px;
     }
-    .modal-actions button {
+    .modal-actions .delete-btn {
       background-color: #ff6347;
       color: white;
       border: none;
@@ -145,12 +145,20 @@
       cursor: pointer;
       border-radius: 5px;
       margin: 0 10px;
+      font-size: 16px;
     }
     .modal-actions button:hover {
       opacity: 0.8;
     }
     .modal-actions .cancel-btn {
-      background-color: #aaa;
+      background-color: #200463;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 0 10px;
+      font-size: 16px;
     }
     .success-message {
       color: green;
@@ -203,8 +211,8 @@
       <span class="close" onclick="closeConfirmModal()">&times;</span>
       <p id="confirmMessage"></p>
       <div class="modal-actions">
-        <button onclick="deleteEvent()">Delete</button>
         <button class="cancel-btn" onclick="closeConfirmModal()">Cancel</button>
+        <button class="delete-btn" onclick="deleteEvent()">Delete</button>
       </div>
     </div>
   </div>
