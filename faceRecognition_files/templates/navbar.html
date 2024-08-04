@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDE Laboratory Navigation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter';
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 15vh;
+        }
+        .logo img {
+            height: 50px;
+            margin-left: 15px;
+            cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+        }
+        .nav-container {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Allow items to wrap */
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        .nav-links li {
+            margin: 0 1rem; /* Adjusted margin for smaller spacing */
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding-bottom: 0.25rem;
+            transition: border-bottom 0.3s;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            border-bottom: 2px solid #ff6347;
+        }
+        .logout-btn, .login-btn {
+            background-color: #4D3682;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 5px;
+            font-size: 16px;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-wrap: wrap;
+            }
+            .nav-links li {
+                margin: 0.5rem;
+            }
+            .logout-btn, .login-btn {
+                font-size: 14px;
+                margin: 0.25rem;
+                padding: 0.25rem 0.5rem;
+            }
+            .logo img {
+                height: 40px;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="EDELaboratory" id="logoImg">
+        </div>
+        <div class="nav-container">
+            <ul class="nav-links" id="navLinks"></ul>
+            <a id="loginBtn" class="login-btn" href="{{ url_for('login') }}">Login</a>
+            <a id="logoutBtn" class="logout-btn" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <script>
+        const isAdmin = {{ 'true' if current_user.is_admin else 'false' }};
+        const currentUrl = '{{ current_url }}';
+        const navLinks = document.getElementById('navLinks');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoImg = document.getElementById('logoImg');
+
+        const links = isAdmin ? 
+            [
+                {name: 'Data Anggota', href: '/data_anggota'},
+                {name: 'Data Event', href: '/event'},
+                {name: 'Absensi', href: '/absensi_event'}
+            ] :
+            [
+                {name: 'Home', href: '/'},
+                {name: 'Pendaftaran', href: '/addprsn'},
+                {name: 'Absensi', href: '/select_event'}
+            ];
+
+        links.forEach(link => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = link.href;
+            a.textContent = link.name;
+            if (link.href === currentUrl) {
+                a.classList.add('active');
+            }
+            a.onclick = function(e) {
+                document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+            };
+            li.appendChild(a);
+            navLinks.appendChild(li);
+        });
+
+        if (!isAdmin) {
+            logoutBtn.style.display = 'none';
+        } else {
+            loginBtn.style.display = 'none'; 
+            logoutBtn.onclick = function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to logout?')) {
+                    alert('Logged out successfully');
+                    window.location.href = '{{ url_for("logout") }}';
+                }
+            };
+        }
+
+        logoImg.onclick = function() {
+            window.location.href = isAdmin ? '/data_anggota' : '/';
+        };
+    </script>
+    
+</body>
+</html>
