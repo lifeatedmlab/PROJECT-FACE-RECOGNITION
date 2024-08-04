@@ -197,7 +197,11 @@ def train_classifier_route(kodeAnggota):
 @app.route('/event')
 @login_required
 def event():
-    mycursor.execute("SELECT eventId, kodeAcara, namaEvent, waktuAcara, kodeAdmin FROM eventmstr")
+    mycursor.execute("""
+        SELECT e.eventId, e.kodeAcara, e.namaEvent, e.waktuAcara, a.username
+        FROM eventmstr e
+        LEFT JOIN adminmstr a ON e.kodeAdmin = a.KodeAdmin
+    """)
     events = mycursor.fetchall()
     return render_template('event.html', events=events, current_url=request.path)
 
