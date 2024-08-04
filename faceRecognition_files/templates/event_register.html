@@ -72,6 +72,59 @@
                 padding: 1rem;
             }
         }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #f44336;
+            cursor: pointer;
+        }
+        .btn-danger, .btn-primary {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 300;
+            margin-top: 5px;
+            margin-right: 20px;
+        }
+        .btn-danger {
+            background-color: #200463;
+            color: white;
+        }
+        .btn-primary {
+            background-color: #FF6E5A;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -81,7 +134,7 @@
     <div class="content">
         <h1>Registrasi Event</h1>
         <div class="form-container">
-            <form id="eventForm" action="{{ url_for('event_register') }}" method="POST">
+            <form action="{{ url_for('event_register') }}" method="POST">
                 <label for="kode-event">Kode Event</label>
                 <input type="text" id="kode-event" name="kode-event" required>
                 
@@ -99,21 +152,75 @@
         </div>
     </div>
     
+    <div id="resultModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close" id="closeModal">&times;</span>
+          <p>Are you sure want to submit the form?</p>
+          <div class="modal-actions">
+            <button class="btn-danger" id="cancelBtn">Cancel</button>
+            <button class="btn-primary" id="submitBtn">Submit</button>
+          </div>
+        </div>
+    </div>
+
     <script>
+        const modal = document.getElementById('resultModal');
+        const closeModal = document.getElementById('closeModal');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const form = document.querySelector('form')
+
         function confirmDiscard() {
             if (confirm('Are you sure you want to discard the changes?')) {
                 // Add actual discard logic here
+                form.reset();
                 alert('Changes discarded.');
             }
         }
     
-        function confirmSubmit(event) {
-            event.preventDefault(); // Prevent the form from submitting immediately
-            if (confirm('Are you sure you want to submit the form?')) {
-                document.getElementById('eventForm').submit();
+        // Modal functionality
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        cancelBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        submitBtn.onclick = function() {
+            window.location.href = '/event'; // Change this to the actual event page URL
+            form.submit();
+        } 
+
+        // Close the modal if the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
-    </script>
+
+        function confirmSubmit(event) {
+            event.preventDefault(); // Prevent the form from submitting immediately
+            modal.style.display = "block";
+            //const kodeAdmin = document.getElementById('kode_admin');
+            //
+            //fetch("/event_register", {
+            //    method: "POST",
+            //    headers: {
+            //        'Content-Type': 'application/json'
+            //    },
+            //    body: JSON.stringify({kodeAdmin: kodeAdmin})
+            //})
+            // .then((response) => response.json())
+            // .then((data) => {
+            //    console.log("Success:", data);
+            // })
+            // .catch((error) => {
+            //    console.error('Error:', error);
+            //});
+        }
+        </script>
     
 </body>
 </html>
