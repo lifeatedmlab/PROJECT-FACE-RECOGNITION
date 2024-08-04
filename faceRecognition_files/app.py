@@ -183,7 +183,7 @@ def train_classifier_route(kodeAnggota):
             session.pop('nama', None)
             session.pop('nim', None)
             session.pop('gen', None)
-        return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota))
+        return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
     else:
         if 'kodeAnggota' in session and session['kodeAnggota'] == kodeAnggota:
             add_person(session['kodeAnggota'], session['nama'], session['nim'], session['gen'])
@@ -197,7 +197,7 @@ def train_classifier_route(kodeAnggota):
 @app.route('/event')
 @login_required
 def event():
-    mycursor.execute("SELECT eventId, kodeAcara, namaEvent, waktuAcara FROM eventmstr")
+    mycursor.execute("SELECT eventId, kodeAcara, namaEvent, waktuAcara, kodeAdmin FROM eventmstr")
     events = mycursor.fetchall()
     return render_template('event.html', events=events, current_url=request.path)
 
