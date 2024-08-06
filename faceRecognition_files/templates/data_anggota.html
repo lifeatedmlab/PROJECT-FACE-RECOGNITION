@@ -145,6 +145,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background-color: #fefefe;
+<<<<<<< Updated upstream
         border: 1px solid #888;
         border-radius: 15px;
         padding: 20px;
@@ -162,6 +163,22 @@
       }
       .notification.error {
         color: red;
+=======
+        border-radius: 10px;
+        border: 1px solid #888;
+        padding: 10px;
+        text-align: center;
+        width: 80%;
+        max-width: 500px;
+      }
+      .notification.success {
+        color: green;
+        font-size: 16px;
+        margin: 20px 0;
+      }
+      .notification.error {
+        color: #f44336;
+>>>>>>> Stashed changes
         font-size: 16px;
         margin: 20px 0;
       }
@@ -243,7 +260,11 @@
         setTimeout(() => {
           notificationOverlay.style.display = 'none';
           notification.style.display = 'none';
+<<<<<<< Updated upstream
         }, 3000);
+=======
+        }, 5000);
+>>>>>>> Stashed changes
       }
 
       closeModal.onclick = closeDeleteModal;
