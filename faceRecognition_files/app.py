@@ -5,7 +5,7 @@ from dataset import generate_dataset, delete_dataset, dbdataset, count_images
 from face_recognition import process_camera_stream
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
-from addevent import add_event, generate_event_id
+from addevent import add_event, namaEvent_exists, generate_event_id
 import os
 import logging
 from enum import Enum
@@ -224,6 +224,10 @@ def event_register():
     kodeAdmin = session.get('kode_admin')
 
     if not kodeAcara or not namaEvent or not waktuAcara:
+        return redirect(url_for('data_event'))
+    
+    if namaEvent_exists(namaEvent):
+        flash(f'Event {namaEvent} sudah ada. Silakan gunakan kode yang lain.', 'error')
         return redirect(url_for('data_event'))
 
     add_event(kodeAcara, namaEvent, waktuAcara, kodeAdmin)

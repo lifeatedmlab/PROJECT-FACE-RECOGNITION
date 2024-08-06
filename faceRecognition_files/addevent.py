@@ -2,6 +2,11 @@ from database import mydb, mycursor
 import random
 import string
 
+def namaEvent_exists(namaEvent):
+    mycursor.execute("SELECT COUNT(*) FROM eventmstr WHERE namaEvent = %s", (namaEvent,))
+    result = mycursor.fetchone()
+    return result[0] > 0
+
 def add_event(kodeAcara, namaEvent, waktuAcara, kodeAdmin):
     try:
         sql = "INSERT INTO eventmstr (kodeAcara, kodeAdmin, namaEvent, waktuAcara) VALUES (%s, %s, %s, %s)"
