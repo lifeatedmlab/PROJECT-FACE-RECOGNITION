@@ -81,6 +81,79 @@
                 margin-left: 0;
             }
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 200px;
+            justify-content: center; 
+            align-items: center; 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #f44336;
+            cursor: pointer;
+        }
+        .btn-danger, .btn-primary {
+            padding: 0.75rem 1.5rem;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 300;
+        }
+        .btn-danger {
+            background-color: #200463;
+            color: white;
+        }
+        .btn-primary {
+            background-color: #FF6E5A;
+            color: white;
+        }
+        .notification {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fefefe;
+            border: 2px solid #200463;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        .notification.success {
+            border-color: #4CAF50;
+            color: black;
+        }
+        .notification.error {
+            border-color: #f44336;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -95,6 +168,20 @@
         </div>
     </nav>
 
+    <!-- Modal untuk Logout -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <p>Are you sure you want to logout?</p>
+            <div class="modal-actions">
+                <button class="btn-danger" id="cancelLogoutBtn">Cancel</button>
+                <button class="btn-primary" id="confirmLogoutBtn">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
     <script>
         const isAdmin = {{ 'true' if current_user.is_admin else 'false' }};
         const currentUrl = '{{ current_url }}';
@@ -102,6 +189,11 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const loginBtn = document.getElementById('loginBtn');
         const logoImg = document.getElementById('logoImg');
+        const logoutModal = document.getElementById('logoutModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+        const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+        const notification = document.getElementById('notification');
 
         const links = isAdmin ? 
             [
@@ -137,11 +229,45 @@
             loginBtn.style.display = 'none'; 
             logoutBtn.onclick = function(e) {
                 e.preventDefault();
-                if (confirm('Are you sure you want to logout?')) {
-                    alert('Logged out successfully');
-                    window.location.href = '{{ url_for("logout") }}';
+                logoutModal.style.display = 'block';
+                
+                closeModal.onclick = function() {
+                    logoutModal.style.display = 'none';
+                }
+                
+                cancelLogoutBtn.onclick = function() {
+                    logoutModal.style.display = 'none';
+                }
+                
+                confirmLogoutBtn.onclick = function() {
+                    window.location.href = '/logout';
+                    simulateLogout(true);
                 }
             };
+            // Close the modal if the user clicks anywhere outside of it
+            window.onclick = function(event) {
+                if (event.target == logoutModal) {
+                    logoutModal.style.display = "none";
+                }
+            }
+
+            function simulateLogout(success) {
+                if (success) {
+                    showNotification('Logout Successfully', 'success');
+                }
+                else {
+                    showNotification('Failed to Logout', 'error');
+                }
+            }
+
+            function showNotification(message, isSuccess) {
+                notification.textContent = message;
+                notification.className = isSuccess ? 'notification success' : 'notification error';
+                notification.style.display ='block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
         }
 
         logoImg.onclick = function() {

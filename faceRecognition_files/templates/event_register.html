@@ -51,17 +51,13 @@
             justify-content: flex-end;
             gap: 1rem;
         }
-        .discard-btn, .submit-btn {
+        .submit-btn {
             padding: 0.75rem 1.5rem;
             font-size: 16px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: 300;
-        }
-        .discard-btn {
-            background-color: #200463;
-            color: white;
         }
         .submit-btn {
             background-color: #FF6E5A;
@@ -83,7 +79,7 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
-            padding-top: 500px; 
+            padding-top: 300px; 
             justify-content: center; 
             align-items: center; 
         }
@@ -126,7 +122,28 @@
             background-color: #FF6E5A;
             color: white;
         }
-
+        .notification {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fefefe;
+            border: 2px solid #200463;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        .notification.success {
+            border-color: #4CAF50;
+            color: black;
+        }
+        .notification.error {
+            border-color: #f44336;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -147,8 +164,7 @@
                 <input type="date" id="tanggal" name="tanggal" required>
                 
                 <div class="buttons">
-                    <button type="button" class="discard-btn" onclick="confirmDiscard()">Discard</button>
-                    <button type="submit" class="submit-btn" onclick="confirmSubmit(event)">Submit</button>
+                    <input type="submit" class="submit-btn" onclick="confirmSubmit(event)" value="Submit">
                 </div>
             </form>
         </div>
@@ -166,20 +182,15 @@
         </div>
     </div>
 
+    <div id="notification" class="notification"></div>
+
     <script>
         const modal = document.getElementById('resultModal');
         const closeModal = document.getElementById('closeModal');
         const submitBtn = document.getElementById('submitBtn');
         const cancelBtn = document.getElementById('cancelBtn');
-        const form = document.querySelector('form')
-
-        function confirmDiscard() {
-            if (confirm('Are you sure you want to discard the changes?')) {
-                // Add actual discard logic here
-                form.reset();
-                alert('Changes discarded.');
-            }
-        }
+        const notification = document.getElementById("notification")
+        const form = document.querySelector('form');
     
         // Modal functionality
         closeModal.onclick = function() {
@@ -204,23 +215,47 @@
 
         function confirmSubmit(event) {
             event.preventDefault(); // Prevent the form from submitting immediately
+            // Check form validity
+            if (form.checkValidity() === false) {
+                // Trigger HTML5 validation message
+                form.reportValidity();
+                return;
+            }
             modal.style.display = "block";
-            //const kodeAdmin = document.getElementById('kode_admin');
-            //
-            //fetch("/event_register", {
-            //    method: "POST",
-            //    headers: {
-            //        'Content-Type': 'application/json'
-            //    },
-            //    body: JSON.stringify({kodeAdmin: kodeAdmin})
-            //})
-            // .then((response) => response.json())
-            // .then((data) => {
-            //    console.log("Success:", data);
-            // })
-            // .catch((error) => {
-            //    console.error('Error:', error);
-            //});
+        }
+
+        form.onsubmit = async function(event) {
+            event.preventDefault(); // Prevent the form from submitting immediately
+            modal.style.display = "none";
+
+            try {
+            // Simulasikan form submission
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: new FormData(form)
+                });
+
+                if (response.ok) {
+                    showNotification("Event has been succesfully added", "success");
+                    // Redirect ke halaman event setelah 3 detik
+                    setTimeout(() => {
+                        window.location.href = '/event';
+                    }, 3000);
+                } else {
+                    showNotification("Failed to added", "error");
+                }
+            } catch (error) {
+                showNotification("Failed to added", "error");
+            }
+        }
+
+        function showNotification(message, isSuccess) {
+            notification.textContent = message;
+            notification.className = isSuccess ? 'notification success' : 'notification error';
+            notification.style.display = "block";
+            setTimeout(() => {
+                notification.style.display = "none";
+            }, 3000);
         }
         </script>
     
