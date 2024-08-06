@@ -81,7 +81,7 @@
                 margin-left: 0;
             }
         }
-        .modal {
+        .model {
             display: none;
             position: fixed;
             z-index: 1;
@@ -95,7 +95,7 @@
             justify-content: center; 
             align-items: center; 
         }
-        .modal-content {
+        .model-content {
             background-color: #fefefe;
             margin: 5% auto 15% auto;
             padding: 20px;
@@ -168,12 +168,12 @@
         </div>
     </nav>
 
-    <!-- Modal untuk Logout -->
-    <div id="logoutModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
+    <!-- model untuk Logout -->
+    <div id="logoutmodel" class="model">
+        <div class="model-content">
+            <span class="close" id="closemodel">&times;</span>
             <p>Are you sure you want to logout?</p>
-            <div class="modal-actions">
+            <div class="model-actions">
                 <button class="btn-danger" id="cancelLogoutBtn">Cancel</button>
                 <button class="btn-primary" id="confirmLogoutBtn">Logout</button>
             </div>
@@ -189,8 +189,8 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const loginBtn = document.getElementById('loginBtn');
         const logoImg = document.getElementById('logoImg');
-        const logoutModal = document.getElementById('logoutModal');
-        const closeModal = document.getElementById('closeModal');
+        const logoutmodel = document.getElementById('logoutmodel');
+        const closemodel = document.getElementById('closemodel');
         const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
         const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
         const notif = document.getElementById('notif');
@@ -229,18 +229,18 @@
             loginBtn.style.display = 'none'; 
             logoutBtn.onclick = function(e) {
                 e.preventDefault();
-                logoutModal.style.display = 'block';
+                logoutmodel.style.display = 'block';
                 
-                closeModal.onclick = function() {
-                    logoutModal.style.display = 'none';
+                closemodel.onclick = function() {
+                    logoutmodel.style.display = 'none';
                 }
                 
                 cancelLogoutBtn.onclick = function() {
-                    logoutModal.style.display = 'none';
+                    logoutmodel.style.display = 'none';
                 }
                 
                 confirmLogoutBtn.onclick = function() {
-                    logoutModal.style.display = 'none';
+                    logoutmodel.style.display = 'none';
                     // Simulasikan logout
                     simulateLogout(true);
                     // Tambahkan delay 3 detik sebelum berpindah halaman
@@ -249,10 +249,10 @@
                     }, 3000);
                 }
             };
-            // Close the modal if the user clicks anywhere outside of it
+            // Close the model if the user clicks anywhere outside of it
             window.onclick = function(event) {
-                if (event.target == logoutModal) {
-                    logoutModal.style.display = "none";
+                if (event.target == logoutmodel) {
+                    logoutmodel.style.display = "none";
                 }
             }
 
