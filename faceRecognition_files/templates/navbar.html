@@ -240,8 +240,13 @@
                 }
                 
                 confirmLogoutBtn.onclick = function() {
-                    window.location.href = '/logout';
+                    logoutModal.style.display = 'none';
+                    // Simulasikan logout
                     simulateLogout(true);
+                    // Tambahkan delay 3 detik sebelum berpindah halaman
+                    setTimeout(function() {
+                        window.location.href = '/logout';
+                    }, 3000);
                 }
             };
             // Close the modal if the user clicks anywhere outside of it
@@ -253,14 +258,18 @@
 
             function simulateLogout(success) {
                 if (success) {
-                    showNotification('Logout Successfully', 'success');
+                    showNotification('Logout Successfully', true);
                 }
                 else {
-                    showNotification('Failed to Logout', 'error');
+                    showNotification('Failed to Logout', false);
                 }
             }
 
             function showNotification(message, isSuccess) {
+               // Hapus notifikasi lama
+                notification.textContent = '';
+                notification.style.display = 'none';
+
                 notification.textContent = message;
                 notification.className = isSuccess ? 'notification success' : 'notification error';
                 notification.style.display ='block';
