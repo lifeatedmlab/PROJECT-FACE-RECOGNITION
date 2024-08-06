@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link
-    rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-  />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -14,7 +11,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh; /* Adjust as needed */
+      height: 100vh;
       text-align: center;
     }
     label {
@@ -25,7 +22,7 @@
     }
     .card-custom {
       background-color: white;
-      border-radius: 20px; 
+      border-radius: 20px;
       width: 570px;
       height: 350px;
       margin: 0 auto;
@@ -35,151 +32,80 @@
     .btn-spacing {
       margin-top: 20px;
     }
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-size: 20px;
+    }
   </style>
 </head>
 <body style="background-color: #f4f6fc">
+  <div class="loading-overlay">
+    <div>
+      <p>Harap tunggu...</p>
+      <div class="spinner-border text-light" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </div>
   {% include "navbar.html" %}
   <section class="py-1">
-    <h3
-      style="
-        text-align: center;
-        color: #200463;
-        margin-top: 1rem;
-        font-size: 40px;
-        font-family: 'Inter';
-        padding: 2rem;
-        font-weight: 600;
-      "
-    >
+    <h3 style="text-align: center; color: #200463; margin-top: 1rem; font-size: 40px; font-family: 'Inter'; padding: 2rem; font-weight: 600;">
       Pendaftaran Wajah {{ kodeAnggota }}
     </h3>
-    <h5 style="color: red; text-align: center">
+    <h5 style="color: red; text-align: center;">
       <i><b>Don't click the submit button until the number up to 100</b></i>
     </h5>
     <div class="container text-center">
       <div class="row">
         <!-- Record Wajah -->
         <div class="col-md-6">
-          <img
-            src="{{ url_for('vidfeed_dataset', kodeAnggota=kodeAnggota) }}"
-            width="100%"
-            class="img-thumbnail"
-            style="border-color: #200463"
-          />
+          <img src="{{ url_for('vidfeed_dataset', kodeAnggota=kodeAnggota) }}" width="100%" class="img-thumbnail" style="border-color: #200463" />
         </div>
         <!-- Data diri -->
         <div class="card col-md-6 card-custom">
           <div class="form-group row">
             <label class="col-sm-2 col-form-label"></label>
             <div class="col-sm-8">
-              <a href="{{ url_for('retry_dataset', kodeAnggota=kodeAnggota) }}" style="font-size:18px; color:#200463"><b>
-                <span class="glyphicon" style="color:#200463; font-size: 18px">&#xe030</span> Retry </b>
+              <a href="{{ url_for('retry_dataset', kodeAnggota=kodeAnggota) }}" style="font-size:18px; color:#200463">
+                <b><span class="glyphicon" style="color:#200463; font-size: 18px">&#xe030</span> Retry</b>
               </a>
             </div>
           </div>
           <form id="registForm">
             <div class="text-left mb-3">
               <label for="exampleInputEmail1" class="label">Nama</label>
-              <input
-                type="email"
-                class="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                value="{{ nama }}"
-                style="
-                  font-size: 16px;
-                  border-color: #200463;
-                  background-color: #f3f3f3;
-                "
-                readonly
-              />
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ nama }}" style="font-size: 16px; border-color: #200463; background-color: #f3f3f3;" readonly />
             </div>
             <div class="text-left mb-3">
               <label for="exampleInputEmail1" class="label">NIM</label>
-              <input
-                type="email"
-                class="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                value="{{ nim }}"
-                style="
-                  font-size: 16px;
-                  border-color: #200463;
-                  background-color: #f3f3f3;
-                "
-                readonly
-              />
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ nim }}" style="font-size: 16px; border-color: #200463; background-color: #f3f3f3;" readonly />
             </div>
             <div class="text-left mb-3">
               <label for="exampleInputEmail1" class="label">Generation</label>
-              <input
-                type="email"
-                class="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                value="{{ gen }}"
-                style="
-                  font-size: 16px;
-                  border-color: #200463;
-                  background-color: #f3f3f3;
-                "
-                disabled
-              />
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ gen }}" style="font-size: 16px; border-color: #200463; background-color: #f3f3f3;" disabled />
             </div>
             <div class="text-left mb-3" style="margin-bottom: 20px;">
               <label for="exampleInputEmail1" class="label" style="text-align: left">Kode Anggota</label>
-              <input
-                type="email"
-                class="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                value="{{ kodeAnggota }}"
-                style="
-                  font-size: 16px;
-                  border-color: #200463;
-                  background-color: #f3f3f3;
-                "
-                readonly
-              />
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ kodeAnggota }}" style="font-size: 16px; border-color: #200463; background-color: #f3f3f3;" readonly />
             </div>
           </form>
           <!-- Button Training -->
           <div class="form-group row btn-spacing">
             <label class="col-sm-2 col-form-label"></label>
             <div class="col-sm-8">
-              <a
-                id="backButton"
-                onclick="confirmBack('addprsn? nama=nama, nim=nim, gen=gen, kodeAnggota=kodeAnggota')"
-                class="btn"
-                style="
-                  padding: 0.75rem 1.5rem;
-                  margin-top: 0.5rem;
-                  font-size: 16px;
-                  border: none;
-                  border-radius: 5px;
-                  cursor: pointer;
-                  background-color: #200463;
-                  font-weight: 300;
-                  color: white;
-                "
-                ><b>Back</b></a
-              >
-              <a
-                class="btn"
-                style="
-                  padding: 0.75rem 1.5rem;
-                  margin-top: 0.5rem;
-                  font-size: 16px;
-                  border: none;
-                  border-radius: 5px;
-                  cursor: pointer;
-                  background-color: #ff6e5a;
-                  font-weight: 300;
-                  color: white;
-                "
-                href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"
-                ><b> Submit </b></a
-              >
+              <a id="backButton" onclick="confirmBack('{{ nama }}', '{{ nim }}', '{{ gen }}', '{{ kodeAnggota }}')" class="btn" style="padding: 0.75rem 1.5rem; margin-top: 0.5rem; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; background-color: #200463; font-weight: 300; color: white;"><b>Back</b></a>
+              <a id="submitBtn" class="btn" style="padding: 0.75rem 1.5rem; margin-top: 0.5rem; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; background-color: #ff6e5a; font-weight: 300; color: white;" href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"><b> Submit </b></a>
             </div>
           </div>
         </div>
@@ -202,6 +128,7 @@
         })
         .catch((error) => console.error("Error:", error));
     }
+
     function confirmBack(nama, nim, gen, kodeAnggota) {
       if (confirm("This will cause the data you inputted before to be discarded. Are you sure you want to go back to the previous page?")) {
         const params = new URLSearchParams({
@@ -213,6 +140,14 @@
         window.location.href = `/addprsn?${params}`;
       }
     }
+
+    document.getElementById('submitBtn').addEventListener('click', function(event) {
+      event.preventDefault();
+      document.querySelector('.loading-overlay').style.display = 'flex';
+      setTimeout(() => {
+        window.location.href = this.getAttribute('href');
+      }, 3000); 
+    });
   </script>
 </body>
 </html>

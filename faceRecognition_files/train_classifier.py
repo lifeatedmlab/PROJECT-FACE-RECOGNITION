@@ -42,7 +42,7 @@ def train_classifier(kodeAnggota):
     
     if len(faces) == 0 or len(ids) == 0:
         flash("Failed to load images or extract IDs. Please check the dataset directory and image format.", "error")
-        return redirect(url_for('home'))
+        return redirect(url_for('addprsn'))
 
     ids = np.array(ids)
 
@@ -56,5 +56,5 @@ def train_classifier(kodeAnggota):
     for file in os.listdir(dataset_dir):
         os.remove(os.path.join(dataset_dir, file))
 
-    flash("Registration successful and classifier uploaded!", "success")
-    return redirect(url_for('home'))
+    flash("Registration successful!", "success")
+    return redirect(url_for('addprsn'))

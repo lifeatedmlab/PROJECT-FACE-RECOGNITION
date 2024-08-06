@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi Event - EDE Laboratory</title>
+    <title>Registrasi Anggota - EDE Laboratory</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -65,85 +65,97 @@
                 padding: 1rem;
             }
         }
+
+        .notification-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.4);
+          z-index: 1000;
+        }
+        .notification {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #fefefe;
+          border: 1px solid #888;
+          border-radius: 10px;
+          padding: 15px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          width: 80%;
+          max-width: 500px;
+          z-index: 1001;
+        }
+        .notification.success {
+          color: green;
+          font-size: 18px;
+          margin: 20px 0;
+        }
+        .notification.error {
+          color: red;
+          font-size: 16px;
+          margin: 20px 0;
+        }
     </style>
 </head>
-  <body>
-    
+<body>
     {% include "navbar.html" %}
 
     <div class="content">
       <h1>Pendaftaran Anggota</h1>
       <div class="form-container">
-            <form method="post" action="/addprsn_submit">
-                  <label for="txtnama" class="form-label">Nama Lengkap</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="txtnama"
-                      name="txtnama"
-                      required
-                    />
-                  <label for="txtnim" class="form-label"
-                    >NIM</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="txtnim"
-                      name="txtnim"
-                      required
-                    />
-                    <label for="optgen">Generation</label>
-                      <select name="optgen" id="optgen" 
-                      required>
-                      <option value="" disabled selected>Pilih Generation</option>
-                        <option value="4">G4</option>
-                        <option value="5">G5</option>
-                        <option value="6">G6</option>
-                      </select>
-                    <label for="txtkdag" class="form-label"
-                    >Kode Anggota</label>
-                    <input
-                      type="text"
-                      id="txtkdag"
-                      name="txtkdag"
-                      required
-                    />
-                <!--Submit button-->
-                <div class="buttons">
-                    <input
-                    type="submit"
-                    class="next-btn"
-                    value="Next"
-                  />
-                </div>
-              </form>
-              {% with messages = get_flashed_messages(with_categories=true) %} {% if
-              messages %}
-              <div class="alert alert-warning" role="alert">
-                {% for category, message in messages %}
-                <p class="{{ category }}">{{ message }}</p>
-                {% endfor %}
-              </div>
-              {% endif %} {% endwith %}
-            </div>
+        <form method="post" action="/addprsn_submit">
+          <label for="txtnama" class="form-label">Nama Lengkap</label>
+          <input type="text" class="form-control" id="txtnama" name="txtnama" required />
+          <label for="txtnim" class="form-label">NIM</label>
+          <input type="text" class="form-control" id="txtnim" name="txtnim" required />
+          <label for="optgen">Generation</label>
+          <select name="optgen" id="optgen" required>
+            <option value="" disabled selected>Pilih Generation</option>
+            <option value="4">G4</option>
+            <option value="5">G5</option>
+            <option value="6">G6</option>
+          </select>
+          <label for="txtkdag" class="form-label">Kode Anggota</label>
+          <input type="text" id="txtkdag" name="txtkdag" required />
+          <!--Submit button-->
+          <div class="buttons">
+            <input type="submit" class="next-btn" value="Next" />
           </div>
+        </form>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="notification-overlay" id="notificationOverlay"></div>
+            <div id="notification" class="notification {% for category, message in messages %}{{ category }}{% endfor %}">
+              {% for category, message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
       </div>
-    </section>
-    <!-- <script>
-      document.addEventListener('DOMContentLoaded', (event) => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const nama = urlParams.get('txtnama');
-        const nim = urlParams.get('txtnim');
-        const gen = urlParams.get('optgen');
-        const kodeAnggota = urlParams.get('txtkdag');
+    </div>
 
-        if (nama && nim && kodeAnggota && gen) {
-          document.getElementById('txtnama').value = nama;
-          document.getElementById('txtnim').value = nim;
-          document.getElementById('optgen').value = gen;
-          document.getElementById('txtkdag').value = kodeAnggota;
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const notification = document.getElementById('notification');
+        const notificationOverlay = document.getElementById("notificationOverlay");
+        if (notification) {
+          notification.style.display = 'block';
+          notificationOverlay.style.display = 'block';
+          setTimeout(() => {
+            notification.style.display = 'none';
+            notificationOverlay.style.display = 'none';
+          }, 3000);
         }
       });
-    </script> -->
-  </body>
+    </script>
+</body>
 </html>

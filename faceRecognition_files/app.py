@@ -197,6 +197,7 @@ def train_classifier_route(kodeAnggota):
             session.pop('nim')
             session.pop('gen')
         return train_classifier(kodeAnggota)
+    
 
 @app.route('/event')
 @login_required
@@ -314,10 +315,7 @@ def get_absensi():
 
     return jsonify({'status': 'success', 'data': absensi_data}), 200
 
-import pandas as pd
-from flask import send_file
-import io
-from datetime import datetime
+
 
 @app.route('/download_absensi_xlsx', methods=['GET'])
 @login_required

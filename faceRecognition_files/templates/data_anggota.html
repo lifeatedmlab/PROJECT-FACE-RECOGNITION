@@ -77,13 +77,11 @@
         height: 100%;
         overflow: auto;
         background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 500px; 
-        justify-content: center; 
-        align-items: center; 
+        padding-top: 60px;
       }
       .modal-content {
         background-color: #fefefe;
-        margin: auto;
+        margin: 5% auto 15% auto;
         padding: 20px;
         border: 1px solid #888;
         border-radius: 10px;
@@ -112,11 +110,11 @@
         margin-right: 20px;
       }
       .btn-danger {
-        background-color: #FF6E5A;
+        background-color: #ff6347;
         color: white;
       }
       .btn-primary {
-        background-color: #200463;
+        background-color: #4a90e2;
         color: white;
       }
       .custom-btn {
@@ -130,6 +128,16 @@
         cursor: pointer;
         border-radius: 5px;
       }
+      .notification-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+      }
       .notification {
         display: none;
         position: fixed;
@@ -137,20 +145,25 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background-color: #fefefe;
-        border: 2px solid #200463;
-        border-radius: 5px;
-        padding: 10px;
+        border: 1px solid #888;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         text-align: center;
         width: 80%;
-        max-width: 400px;
+        height: 30px;
+        max-width: 500px;
+        z-index: 1001;
       }
       .notification.success {
-        border-color: #200463;
-        color: #200463;
+        color: green;
+        font-size: 18px;
+        margin: 20px 0;
       }
       .notification.error {
-        border-color: #f44336;
-        color: #f44336;
+        color: red;
+        font-size: 16px;
+        margin: 20px 0;
       }
     </style>
   </head>
@@ -195,11 +208,12 @@
       <div class="modal-content">
         <span id="closeModal" class="close">&times;</span>
         <p id="modalMessage">Are you sure you want to delete this record?</p>
-        <button class="btn-primary" id="cancelDeleteBtn">Cancel</button>
         <button class="btn-danger" id="confirmDeleteBtn">Delete</button>
+        <button class="btn-primary" id="cancelDeleteBtn">Cancel</button>
       </div>
     </div>
 
+    <div id="notificationOverlay" class="notification-overlay"></div>
     <div id="notification" class="notification"></div>
 
     <script>
@@ -207,6 +221,7 @@
       const closeModal = document.getElementById("closeModal");
       const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
       const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+      const notificationOverlay = document.getElementById("notificationOverlay");
       const notification = document.getElementById("notification");
       let currentKodeAnggota = null;
 
@@ -223,10 +238,12 @@
       function showNotification(message, isSuccess) {
         notification.textContent = message;
         notification.className = isSuccess ? 'notification success' : 'notification error';
+        notificationOverlay.style.display = 'block';
         notification.style.display = 'block';
         setTimeout(() => {
+          notificationOverlay.style.display = 'none';
           notification.style.display = 'none';
-        }, 2000);
+        }, 3000);
       }
 
       closeModal.onclick = closeDeleteModal;
