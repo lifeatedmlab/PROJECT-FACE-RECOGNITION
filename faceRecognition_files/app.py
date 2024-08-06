@@ -385,7 +385,7 @@ def delete_data(kodeAnggota):
         except Exception as e:
             print(f"Failed to delete {s3_key} from Cloudflare: {e}")
 
-        return jsonify({'success': True, 'message': f"Data for kodeAnggota {kodeAnggota} deleted successfully."})
+        return jsonify({'success': True, 'message': f"Data for Kode Anggota {kodeAnggota} deleted successfully."})
     except Exception as e:
         mydb.rollback()
         return jsonify({'success': False, 'message': f"Failed to delete: {e}"})
