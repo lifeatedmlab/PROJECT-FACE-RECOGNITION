@@ -132,7 +132,7 @@
             background-color: #FF6E5A;
             color: white;
         }
-        .notification {
+        .notif {
             display: none;
             position: fixed;
             top: 50%;
@@ -146,11 +146,11 @@
             width: 80%;
             max-width: 400px;
         }
-        .notification.success {
+        .notif.success {
             border-color: #4CAF50;
             color: black;
         }
-        .notification.error {
+        .notif.error {
             border-color: #f44336;
             color: black;
         }
@@ -180,7 +180,7 @@
         </div>
     </div>
 
-    <div id="notification" class="notification"></div>
+    <div id="notif" class="notif"></div>
 
     <script>
         const isAdmin = {{ 'true' if current_user.is_admin else 'false' }};
@@ -193,7 +193,7 @@
         const closeModal = document.getElementById('closeModal');
         const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
         const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
-        const notification = document.getElementById('notification');
+        const notif = document.getElementById('notif');
 
         const links = isAdmin ? 
             [
@@ -258,23 +258,23 @@
 
             function simulateLogout(success) {
                 if (success) {
-                    showNotification('Logout Successfully', true);
+                    shownotif('Logout Successfully', true);
                 }
                 else {
-                    showNotification('Failed to Logout', false);
+                    shownotif('Failed to Logout', false);
                 }
             }
 
-            function showNotification(message, isSuccess) {
+            function shownotif(message, isSuccess) {
                // Hapus notifikasi lama
-                notification.textContent = '';
-                notification.style.display = 'none';
+                notif.textContent = '';
+                notif.style.display = 'none';
 
-                notification.textContent = message;
-                notification.className = isSuccess ? 'notification success' : 'notification error';
-                notification.style.display ='block';
+                notif.textContent = message;
+                notif.className = isSuccess ? 'notification success' : 'notification error';
+                notif.style.display ='block';
                 setTimeout(() => {
-                    notification.style.display = 'none';
+                    notif.style.display = 'none';
                 }, 3000);
             }
         }
