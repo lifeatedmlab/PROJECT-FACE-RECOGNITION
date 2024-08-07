@@ -189,7 +189,7 @@
         const closeModal = document.getElementById('closeModal');
         const submitBtn = document.getElementById('submitBtn');
         const cancelBtn = document.getElementById('cancelBtn');
-        const notification = document.getElementById("notification")
+        const notification = document.getElementById("notification");
         const form = document.querySelector('form');
     
         // Modal functionality
@@ -202,8 +202,8 @@
         }
 
         submitBtn.onclick = function() {
-            window.location.href = '/event'; // Change this to the actual event page URL
-            form.submit();
+            modal.style.display = 'none';
+            form.dispatchEvent(new Event('submit', { 'bubbles': true }));
         } 
 
         // Close the modal if the user clicks anywhere outside of it
@@ -236,22 +236,21 @@
                 });
 
                 if (response.ok) {
-                    showNotification("Event has been succesfully added", "success");
-                    // Redirect ke halaman event setelah 3 detik
-                    setTimeout(() => {
+                    showNotification("Event has been succesfully added", 'success');
+                    setTimeout(function() {
                         window.location.href = '/event';
                     }, 3000);
                 } else {
-                    showNotification("Failed to added", "error");
+                    showNotification("Failed to added", 'error');
                 }
             } catch (error) {
-                showNotification("Failed to added", "error");
+                showNotification("Failed to added", error);
             }
         }
 
-        function showNotification(message, isSuccess) {
+        function showNotification(message, type) {
             notification.textContent = message;
-            notification.className = isSuccess ? 'notification success' : 'notification error';
+            notification.className = `notification ${type}`;
             notification.style.display = "block";
             setTimeout(() => {
                 notification.style.display = "none";
