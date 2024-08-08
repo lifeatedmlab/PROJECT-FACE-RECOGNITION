@@ -104,7 +104,26 @@
           <div class="form-group row btn-spacing">
             <label class="col-sm-2 col-form-label"></label>
             <div class="col-sm-8">
-              <a id="backButton" onclick="confirmBack('{{ nama }}', '{{ nim }}', '{{ gen }}', '{{ kodeAnggota }}')" class="btn" style="padding: 0.75rem 1.5rem; margin-top: 0.5rem; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; background-color: #200463; font-weight: 300; color: white;"><b>Back</b></a>
+              <a
+                id="backButton"
+                action="action"
+                onclick="window.history.go(-1); return false;"
+                type="submit"
+                value="Cancel"
+                class="btn"
+                style="
+                  padding: 0.75rem 1.5rem;
+                  margin-top: 0.5rem;
+                  font-size: 16px;
+                  border: none;
+                  border-radius: 5px;
+                  cursor: pointer;
+                  background-color: #200463;
+                  font-weight: 300;
+                  color: white;
+                "
+                ><b>Back</b></a
+              >
               <a id="submitBtn" class="btn" style="padding: 0.75rem 1.5rem; margin-top: 0.5rem; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; background-color: #ff6e5a; font-weight: 300; color: white;" href="{{ url_for('train_classifier_route', kodeAnggota=kodeAnggota) }}"><b> Submit </b></a>
             </div>
           </div>
