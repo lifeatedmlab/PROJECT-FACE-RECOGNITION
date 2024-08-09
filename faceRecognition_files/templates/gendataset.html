@@ -61,7 +61,7 @@
   {% include "navbar.html" %}
   <section class="py-1">
     <h3 style="text-align: center; color: #200463; margin-top: 1rem; font-size: 40px; font-family: 'Inter'; padding: 2rem; font-weight: 600;">
-      Pendaftaran Wajah {{ kodeAnggota }}
+      Registasi Wajah {{ kodeAnggota }}
     </h3>
     <h5 style="color: red; text-align: center;">
       <i><b>Don't click the submit button until the number up to 100</b></i>
@@ -132,6 +132,7 @@
     </div>
     <br />
   </section>
+
   <script>
     function retryDataset(kodeAnggota) {
       fetch(`/retry_dataset/${kodeAnggota}`, {
@@ -146,18 +147,6 @@
           }
         })
         .catch((error) => console.error("Error:", error));
-    }
-
-    function confirmBack(nama, nim, gen, kodeAnggota) {
-      if (confirm("This will cause the data you inputted before to be discarded. Are you sure you want to go back to the previous page?")) {
-        const params = new URLSearchParams({
-          nama: nama,
-          nim: nim,
-          gen: gen,
-          kodeAnggota: kodeAnggota
-        }).toString();
-        window.location.href = `/addprsn?${params}`;
-      }
     }
 
     document.getElementById('submitBtn').addEventListener('click', function(event) {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi - EDE Laboratory</title>
+    <title>Absensi - EDM Laboratory</title>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -81,7 +81,19 @@
             width: 100%;
             margin-bottom: 10px;
         }
-        .action {
+        .submit-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 300;
+        }
+        .submit-btn {
+            background-color: #FF6E5A;
+            color: white;
+        }
+        /* .action {
           display: flex;
           justify-content: center;
           width: 100%;
@@ -100,7 +112,7 @@
         .action button:active {
             background-color: #FF6E5A;
             opacity: 0.5;
-        }
+        } */
 
         @media (max-width: 1024px) {
             .webcam-container {
@@ -242,7 +254,7 @@
                 <p id="generation" class="content">Loading...</p>
             </div>
             <div class="action">
-                <button onclick="submitAttendance()">Submit</button>
+                <button class="submit-btn" onclick="submitAttendance()">Submit</button>
             </div>
         </div>
         <div id="resultModal" class="modal">

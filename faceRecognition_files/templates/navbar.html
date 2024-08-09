@@ -1,288 +1,301 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDE Laboratory Navigation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDM Laboratory Navigation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Inter';
-            margin: 0;
-            padding: 0;
-        }
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1rem;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            height: 15vh;
-        }
-        .logo img {
-            height: 50px;
-            margin-left: 15px;
-            cursor: pointer; /* Add cursor pointer to indicate it's clickable */
-        }
-        .nav-container {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-            justify-content: space-between;
-            flex-wrap: wrap; /* Allow items to wrap */
-        }
+      body {
+        font-family: "Inter";
+        margin: 0;
+        padding: 0;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 15vh;
+      }
+      .logo img {
+        height: 50px;
+        margin-left: 15px;
+        cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+      }
+      .nav-container {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        justify-content: space-between;
+        flex-wrap: wrap; /* Allow items to wrap */
+      }
+      .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+        justify-content: center;
+        flex-grow: 1;
+      }
+      .nav-links li {
+        margin: 0 1rem; /* Adjusted margin for smaller spacing */
+      }
+      .nav-links a {
+        text-decoration: none;
+        color: #333;
+        padding-bottom: 0.25rem;
+        transition: border-bottom 0.3s;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        border-bottom: 2px solid #ff6347;
+      }
+      .logout-btn,
+      .login-btn {
+        background-color: #4d3682;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-right: 5px;
+        font-size: 16px;
+      }
+      @media (max-width: 768px) {
         .nav-links {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            font-size: 16px;
-            justify-content: center;
-            flex-grow: 1;
+          flex-wrap: wrap;
         }
         .nav-links li {
-            margin: 0 1rem; /* Adjusted margin for smaller spacing */
+          margin: 0.5rem;
         }
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            padding-bottom: 0.25rem;
-            transition: border-bottom 0.3s;
+        .logout-btn,
+        .login-btn {
+          font-size: 14px;
+          margin: 0.25rem;
+          padding: 0.25rem 0.5rem;
         }
-        .nav-links a:hover,
-        .nav-links a.active {
-            border-bottom: 2px solid #ff6347;
+        .logo img {
+          height: 40px;
+          margin-left: 0;
         }
-        .logout-btn, .login-btn {
-            background-color: #4D3682;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            margin-right: 5px;
-            font-size: 16px;
-        }
-        @media (max-width: 768px) {
-            .nav-links {
-                flex-wrap: wrap;
-            }
-            .nav-links li {
-                margin: 0.5rem;
-            }
-            .logout-btn, .login-btn {
-                font-size: 14px;
-                margin: 0.25rem;
-                padding: 0.25rem 0.5rem;
-            }
-            .logo img {
-                height: 40px;
-                margin-left: 0;
-            }
-        }
-        .model {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 200px;
-            justify-content: center; 
-            align-items: center; 
-        }
-        .model-content {
-            background-color: #fefefe;
-            margin: 5% auto 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: #f44336;
-            cursor: pointer;
-        }
-        .btn-danger, .btn-primary {
-            padding: 0.75rem 1.5rem;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 300;
-        }
-        .btn-danger {
-            background-color: #200463;
-            color: white;
-        }
-        .btn-primary {
-            background-color: #FF6E5A;
-            color: white;
-        }
-        .notif {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fefefe;
-            border: 2px solid #200463;
-            border-radius: 5px;
-            padding: 10px;
-            text-align: center;
-            width: 80%;
-            max-width: 400px;
-        }
-        .notif.success {
-            border-color: #4CAF50;
-            color: black;
-        }
-        .notif.error {
-            border-color: #f44336;
-            color: black;
-        }
+      }
+      .model {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 200px;
+        justify-content: center;
+        align-items: center;
+      }
+      .model-content {
+        background-color: #fefefe;
+        margin: 5% auto 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover,
+      .close:focus {
+        color: #f44336;
+        cursor: pointer;
+      }
+      .btn-danger,
+      .btn-primary {
+        padding: 0.75rem 1.5rem;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 300;
+      }
+      .btn-danger {
+        background-color: #200463;
+        color: white;
+      }
+      .btn-primary {
+        background-color: #ff6e5a;
+        color: white;
+      }
+      .notif {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fefefe;
+        border: 2px solid #200463;
+        border-radius: 5px;
+        padding: 10px;
+        text-align: center;
+        width: 80%;
+        max-width: 400px;
+      }
+      .notif.success {
+        border-color: #4caf50;
+        color: black;
+      }
+      .notif.error {
+        border-color: #f44336;
+        color: black;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <div class="logo">
-            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="EDELaboratory" id="logoImg">
-        </div>
-        <div class="nav-container">
-            <ul class="nav-links" id="navLinks"></ul>
-            <a id="loginBtn" class="login-btn" href="{{ url_for('login') }}">Login</a>
-            <a id="logoutBtn" class="logout-btn" href="{{ url_for('logout') }}">Logout</a>
-        </div>
+      <div class="logo">
+        <img
+          src="{{ url_for('static', filename='img/logo.png') }}"
+          alt="EDELaboratory"
+          id="logoImg"
+        />
+      </div>
+      <div class="nav-container">
+        <ul class="nav-links" id="navLinks"></ul>
+        <a id="loginBtn" class="login-btn" href="{{ url_for('login') }}"
+          >Login</a
+        >
+        <a id="logoutBtn" class="logout-btn" href="{{ url_for('logout') }}"
+          >Logout</a
+        >
+      </div>
     </nav>
 
     <!-- model untuk Logout -->
     <div id="logoutmodel" class="model">
-        <div class="model-content">
-            <span class="close" id="closemodel">&times;</span>
-            <p>Are you sure you want to logout?</p>
-            <div class="model-actions">
-                <button class="btn-danger" id="cancelLogoutBtn">Cancel</button>
-                <button class="btn-primary" id="confirmLogoutBtn">Logout</button>
-            </div>
+      <div class="model-content">
+        <span class="close" id="closemodel">&times;</span>
+        <p>Are you sure you want to logout?</p>
+        <div class="model-actions">
+          <button class="btn-danger" id="cancelLogoutBtn">Cancel</button>
+          <button class="btn-primary" id="confirmLogoutBtn">Logout</button>
         </div>
+      </div>
     </div>
 
     <div id="notif" class="notif"></div>
 
     <script>
-        const isAdmin = {{ 'true' if current_user.is_admin else 'false' }};
-        const currentUrl = '{{ current_url }}';
-        const navLinks = document.getElementById('navLinks');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoImg = document.getElementById('logoImg');
-        const logoutmodel = document.getElementById('logoutmodel');
-        const closemodel = document.getElementById('closemodel');
-        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
-        const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
-        const notif = document.getElementById('notif');
+      const isAdmin = {{ 'true' if current_user.is_admin else 'false' }};
+      const currentUrl = '{{ current_url }}';
+      const navLinks = document.getElementById('navLinks');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const loginBtn = document.getElementById('loginBtn');
+      const logoImg = document.getElementById('logoImg');
+      const logoutmodel = document.getElementById('logoutmodel');
+      const closemodel = document.getElementById('closemodel');
+      const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+      const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+      const notif = document.getElementById('notif');
 
-        const links = isAdmin ? 
-            [
-                {name: 'Data Anggota', href: '/data_anggota'},
-                {name: 'Data Event', href: '/event'},
-                {name: 'Absensi', href: '/absensi_event'}
-            ] :
-            [
-                {name: 'Home', href: '/'},
-                {name: 'Pendaftaran', href: '/addprsn'},
-                {name: 'Absensi', href: '/select_event'}
-            ];
+      const links = isAdmin ?
+          [
+              {name: 'Data Anggota', href: '/data_anggota'},
+              {name: 'Data Event', href: '/event'},
+              {name: 'Absensi', href: '/absensi_event'}
+          ] :
+          [
+              {name: 'Home', href: '/'},
+              {name: 'Registrasi', href: '/addprsn'},
+              {name: 'Absensi', href: '/select_event'}
+          ];
 
-        links.forEach(link => {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = link.href;
-            a.textContent = link.name;
-            if (link.href === currentUrl) {
-                a.classList.add('active');
-            }
-            a.onclick = function(e) {
-                document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-            };
-            li.appendChild(a);
-            navLinks.appendChild(li);
-        });
+      links.forEach(link => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.name;
+          if (link.href === currentUrl) {
+              a.classList.add('active');
+          }
+          a.onclick = function(e) {
+              document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+              this.classList.add('active');
+          };
+          li.appendChild(a);
+          navLinks.appendChild(li);
+      });
 
-        if (!isAdmin) {
-            logoutBtn.style.display = 'none';
-        } else {
-            loginBtn.style.display = 'none'; 
-            logoutBtn.onclick = function(e) {
-                e.preventDefault();
-                logoutmodel.style.display = 'block';
-                
-                closemodel.onclick = function() {
-                    logoutmodel.style.display = 'none';
-                }
-                
-                cancelLogoutBtn.onclick = function() {
-                    logoutmodel.style.display = 'none';
-                }
-                
-                confirmLogoutBtn.onclick = function() {
-                    logoutmodel.style.display = 'none';
-                    // Simulasikan logout
-                    simulateLogout(true);
-                    // Tambahkan delay 3 detik sebelum berpindah halaman
-                    setTimeout(function() {
-                        window.location.href = '/logout';
-                    }, 3000);
-                }
-            };
-            // Close the model if the user clicks anywhere outside of it
-            window.onclick = function(event) {
-                if (event.target == logoutmodel) {
-                    logoutmodel.style.display = "none";
-                }
-            }
+      if (!isAdmin) {
+          logoutBtn.style.display = 'none';
+      } else {
+          loginBtn.style.display = 'none';
+          logoutBtn.onclick = function(e) {
+              e.preventDefault();
+              logoutmodel.style.display = 'block';
 
-            function simulateLogout(success) {
-                if (success) {
-                    shownotif('Logout Successfully', true);
-                }
-                else {
-                    shownotif('Failed to Logout', false);
-                }
-            }
+              closemodel.onclick = function() {
+                  logoutmodel.style.display = 'none';
+              }
 
-            function shownotif(message, isSuccess) {
-               // Hapus notifikasi lama
-                notif.textContent = '';
-                notif.style.display = 'none';
+              cancelLogoutBtn.onclick = function() {
+                  logoutmodel.style.display = 'none';
+              }
 
-                notif.textContent = message;
-                notif.className = isSuccess ? 'notification success' : 'notification error';
-                notif.style.display ='block';
-                setTimeout(() => {
-                    notif.style.display = 'none';
-                }, 3000);
-            }
-        }
+              confirmLogoutBtn.onclick = function() {
+                  logoutmodel.style.display = 'none';
+                  // Simulasikan logout
+                  simulateLogout(true);
+                  // Tambahkan delay 3 detik sebelum berpindah halaman
+                  setTimeout(function() {
+                      window.location.href = '/logout';
+                  }, 3000);
+              }
+          };
+          // Close the model if the user clicks anywhere outside of it
+          window.onclick = function(event) {
+              if (event.target == logoutmodel) {
+                  logoutmodel.style.display = "none";
+              }
+          }
 
-        logoImg.onclick = function() {
-            window.location.href = isAdmin ? '/data_anggota' : '/';
-        };
+          function simulateLogout(success) {
+              if (success) {
+                  shownotif('Logout Successfully', true);
+              }
+              else {
+                  shownotif('Failed to Logout', false);
+              }
+          }
+
+          function shownotif(message, isSuccess) {
+             // Hapus notifikasi lama
+              notif.textContent = '';
+              notif.style.display = 'none';
+
+              notif.textContent = message;
+              notif.className = isSuccess ? 'notification success' : 'notification error';
+              notif.style.display ='block';
+              setTimeout(() => {
+                  notif.style.display = 'none';
+              }, 3000);
+          }
+      }
+
+      logoImg.onclick = function() {
+          window.location.href = isAdmin ? '/data_anggota' : '/';
+      };
     </script>
-    
-</body>
+  </body>
 </html>

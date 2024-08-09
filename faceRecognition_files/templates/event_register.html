@@ -1,262 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi Event - EDE Laboratory</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrasi Event - EDM Laboratory</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Inter';
-            margin: 0;
-            padding: 0;
-            background-color: #F4F6FC;
-        }
-        .content {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #200463;
-            text-align: center;
-            font-size: 40px;
-            margin-bottom: 2rem;
-        }
+      body {
+        font-family: "Inter";
+        margin: 0;
+        padding: 0;
+        background-color: #f4f6fc;
+      }
+      .content {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #200463;
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 2rem;
+      }
+      .form-container {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 20px;
+        color: #333;
+      }
+      input[type="text"],
+      input[type="date"] {
+        width: 100%;
+        padding: 1rem;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 1.5rem;
+        box-sizing: border-box;
+      }
+      .buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+      .submit-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 300;
+      }
+      .submit-btn {
+        background-color: #ff6e5a;
+        color: white;
+      }
+      @media (max-width: 768px) {
         .form-container {
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: 0 auto;
+          padding: 1rem;
         }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 20px;
-            color: #333;
-        }
-        input[type="text"], input[type="date"] {
-            width: 100%;
-            padding: 1rem;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 1.5rem;
-            box-sizing: border-box;
-        }
-        .buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-        .submit-btn {
-            padding: 0.75rem 1.5rem;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 300;
-        }
-        .submit-btn {
-            background-color: #FF6E5A;
-            color: white;
-        }
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 1rem;
-            }
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 300px; 
-            justify-content: center; 
-            align-items: center; 
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: #f44336;
-            cursor: pointer;
-        }
-        .btn-danger, .btn-primary {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 300;
-            margin-top: 5px;
-            margin-right: 20px;
-        }
-        .btn-danger {
-            background-color: #200463;
-            color: white;
-        }
-        .btn-primary {
-            background-color: #FF6E5A;
-            color: white;
-        }
-        .notification {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fefefe;
-            border: 2px solid #200463;
-            border-radius: 5px;
-            padding: 10px;
-            text-align: center;
-            width: 80%;
-            max-width: 400px;
-        }
-        .notification.success {
-            border-color: #4CAF50;
-            color: black;
-        }
-        .notification.error {
-            border-color: #f44336;
-            color: black;
-        }
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 300px;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover,
+      .close:focus {
+        color: #f44336;
+        cursor: pointer;
+      }
+      .btn-danger,
+      .btn-primary {
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 300;
+        margin-top: 5px;
+        margin-right: 20px;
+      }
+      .btn-danger {
+        background-color: #200463;
+        color: white;
+      }
+      .btn-primary {
+        background-color: #ff6e5a;
+        color: white;
+      }
+      .notification {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fefefe;
+        border: 2px solid #200463;
+        border-radius: 5px;
+        padding: 10px;
+        text-align: center;
+        width: 80%;
+        max-width: 400px;
+      }
+      .notification.success {
+        border-color: #4caf50;
+        color: black;
+      }
+      .notification.error {
+        border-color: #f44336;
+        color: black;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Include the navbar here -->
     {% include "navbar.html" %}
 
     <div class="content">
-        <h1>Registrasi Event</h1>
-        <div class="form-container">
-            <form action="{{ url_for('event_register') }}" method="POST">
-                <label for="kode-event">Kode Event</label>
-                <input type="text" id="kode-event" name="kode-event" required>
-                
-                <label for="nama-event">Nama Event</label>
-                <input type="text" id="nama-event" name="nama-event" required>
-                
-                <label for="tanggal">Tanggal</label>
-                <input type="date" id="tanggal" name="tanggal" required>
-                
-                <div class="buttons">
-                    <input type="submit" class="submit-btn" onclick="confirmSubmit(event)" value="Submit">
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <div id="resultModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-          <span class="close" id="closeModal">&times;</span>
-          <p>Are you sure want to submit the form?</p>
-          <div class="modal-actions">
-            <button class="btn-danger" id="cancelBtn">Cancel</button>
-            <button class="btn-primary" id="submitBtn">Submit</button>
+      <h1>Registrasi Event</h1>
+      <div class="form-container">
+        <form action="{{ url_for('event_register') }}" method="POST">
+          <label for="kode-event">Kode Event</label>
+          <input type="text" id="kode-event" name="kode-event" required />
+
+          <label for="nama-event">Nama Event</label>
+          <input type="text" id="nama-event" name="nama-event" required />
+
+          <label for="tanggal">Tanggal</label>
+          <input type="date" id="tanggal" name="tanggal" required />
+
+          <div class="buttons">
+            <input
+              type="submit"
+              class="submit-btn"
+              onclick="confirmSubmit(event)"
+              value="Submit"
+            />
           </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="resultModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <p>Are you sure want to submit the form?</p>
+        <div class="modal-actions">
+          <button class="btn-danger" id="cancelBtn">Cancel</button>
+          <button class="btn-primary" id="submitBtn">Submit</button>
         </div>
+      </div>
     </div>
 
     <div id="notification" class="notification"></div>
 
     <script>
-        const modal = document.getElementById('resultModal');
-        const closeModal = document.getElementById('closeModal');
-        const submitBtn = document.getElementById('submitBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const notification = document.getElementById("notification");
-        const form = document.querySelector('form');
-    
-        // Modal functionality
-        closeModal.onclick = function() {
-            modal.style.display = "none";
+      const modal = document.getElementById("resultModal");
+      const closeModal = document.getElementById("closeModal");
+      const submitBtn = document.getElementById("submitBtn");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const notification = document.getElementById("notification");
+      const form = document.querySelector("form");
+
+      // Modal functionality
+      closeModal.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      cancelBtn.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      submitBtn.onclick = function () {
+        modal.style.display = "none";
+        form.dispatchEvent(new Event("submit", { bubbles: true }));
+      };
+
+      // Close the modal if the user clicks anywhere outside of it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
         }
+      };
 
-        cancelBtn.onclick = function() {
-            modal.style.display = "none";
+      function confirmSubmit(event) {
+        event.preventDefault(); // Prevent the form from submitting immediately
+        // Check form validity
+        if (form.checkValidity() === false) {
+          // Trigger HTML5 validation message
+          form.reportValidity();
+          return;
         }
+        modal.style.display = "block";
+      }
 
-        submitBtn.onclick = function() {
-            modal.style.display = 'none';
-            form.dispatchEvent(new Event('submit', { 'bubbles': true }));
-        } 
+      form.onsubmit = async function (event) {
+        event.preventDefault(); // Prevent the form from submitting immediately
+        modal.style.display = "none";
 
-        // Close the modal if the user clicks anywhere outside of it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        try {
+          // Simulasikan form submission
+          const response = await fetch(form.action, {
+            method: form.method,
+            body: new FormData(form),
+          });
 
-        function confirmSubmit(event) {
-            event.preventDefault(); // Prevent the form from submitting immediately
-            // Check form validity
-            if (form.checkValidity() === false) {
-                // Trigger HTML5 validation message
-                form.reportValidity();
-                return;
-            }
-            modal.style.display = "block";
-        }
-
-        form.onsubmit = async function(event) {
-            event.preventDefault(); // Prevent the form from submitting immediately
-            modal.style.display = "none";
-
-            try {
-            // Simulasikan form submission
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    body: new FormData(form)
-                });
-
-                if (response.ok) {
-                    showNotification("Event has been succesfully added", 'success');
-                    setTimeout(function() {
-                        window.location.href = '/event';
-                    }, 3000);
-                } else {
-                    showNotification("Failed to added", 'error');
-                }
-            } catch (error) {
-                showNotification("Failed to added", error);
-            }
-        }
-
-        function showNotification(message, type) {
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = "block";
-            setTimeout(() => {
-                notification.style.display = "none";
+          if (response.ok) {
+            showNotification("Event has been succesfully added", "success");
+            setTimeout(function () {
+              window.location.href = "/event";
             }, 3000);
+          } else {
+            showNotification("Failed to added", "error");
+          }
+        } catch (error) {
+          showNotification("Failed to added", error);
         }
-        </script>
-    
-</body>
+      };
+
+      function showNotification(message, type) {
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.style.display = "block";
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 3000);
+      }
+    </script>
+  </body>
 </html>

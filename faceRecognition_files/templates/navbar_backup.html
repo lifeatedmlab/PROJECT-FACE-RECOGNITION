@@ -1,145 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDE Laboratory Navigation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EDM Laboratory Navigation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 15vh;
+      }
+      .logo img {
+        height: 50px;
+        margin-left: 15px;
+      }
+      .nav-container {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+      }
+      .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 24px;
+        justify-content: center;
+        flex-grow: 1;
+      }
+      .nav-links li {
+        margin: 0 2rem;
+      }
+      .nav-links a {
+        text-decoration: none;
+        color: #333;
+        padding-bottom: 0.25rem;
+        transition: border-bottom 0.3s;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        border-bottom: 2px solid #ff6347;
+      }
+      .logout-btn {
+        background-color: #4d3682;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-right: 5px;
+      }
+      @media (max-width: 768px) {
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1rem;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            height: 15vh;
-        }
-        .logo img {
-            height: 50px;
-            margin-left: 15px;
+          flex-direction: column;
+          height: auto;
         }
         .nav-container {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
+          flex-direction: column;
+          align-items: center;
         }
         .nav-links {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            font-size: 24px;
-            justify-content: center;
-            flex-grow: 1;
+          flex-direction: column;
+          align-items: center;
         }
         .nav-links li {
-            margin: 0 2rem;
+          margin: 0.5rem 0;
         }
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            padding-bottom: 0.25rem;
-            transition: border-bottom 0.3s;
-        }
-        .nav-links a:hover,
-        .nav-links a.active {
-            border-bottom: 2px solid #ff6347;
-        }
-        .logout-btn {
-            background-color: #4D3682;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            margin-right: 5px;
-        }
-        @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-                height: auto;
-            }
-            .nav-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .nav-links {
-                flex-direction: column;
-                align-items: center;
-            }
-            .nav-links li {
-                margin: 0.5rem 0;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <div class="logo">
-            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="EDELaboratory">
-        </div>
-        <div class="nav-container">
-            <ul class="nav-links" id="navLinks">
-                <!-- Links will be dynamically populated based on user role -->
-            </ul>
-            <a id="logoutBtn" class="logout-btn" href="#logout">Logout</a>
-        </div>
+      <div class="logo">
+        <img
+          src="{{ url_for('static', filename='img/logo.png') }}"
+          alt="EDELaboratory"
+        />
+      </div>
+      <div class="nav-container">
+        <ul class="nav-links" id="navLinks">
+          <!-- Links will be dynamically populated based on user role -->
+        </ul>
+        <a id="logoutBtn" class="logout-btn" href="#logout">Logout</a>
+      </div>
     </nav>
 
     <script>
-        // Simulate user role (replace with actual authentication logic)
-        const isAdmin = true; // Set to false to see non-admin menu
+      // Simulate user role (replace with actual authentication logic)
+      const isAdmin = true; // Set to false to see non-admin menu
 
-        const navLinks = document.getElementById('navLinks');
-        const logoutBtn = document.getElementById('logoutBtn');
-        
-        const links = isAdmin ? 
-            [
-                {name: 'Data Anggota', href: '/'},
-                {name: 'Data Event', href: '#'},
-                {name: 'Absensi', href: '/absensi'}
-            ] :
-            [
-                {name: 'Home', href: '#'},
-                {name: 'Pendaftaran', href: '#'},
-                {name: 'Absensi', href: '#'}
-            ];
+      const navLinks = document.getElementById("navLinks");
+      const logoutBtn = document.getElementById("logoutBtn");
 
-        links.forEach(link => {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = link.href;
-            a.textContent = link.name;
-            if (link.name === 'Data Anggota' || link.name === 'Home') {
-                a.classList.add('active');
-            }
-            a.onclick = function(e) {
-                document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
-                this.classList.add('active');
-            };
-            li.appendChild(a);
-            navLinks.appendChild(li);
-        });
+      const links = isAdmin
+        ? [
+            { name: "Data Anggota", href: "/" },
+            { name: "Data Event", href: "#" },
+            { name: "Absensi", href: "/absensi" },
+          ]
+        : [
+            { name: "Home", href: "#" },
+            { name: "Pendaftaran", href: "#" },
+            { name: "Absensi", href: "#" },
+          ];
 
-        if (!isAdmin) {
-            logoutBtn.style.display = 'none';
-        } else {
-            logoutBtn.onclick = function(e) {
-                e.preventDefault();
-                if (confirm('Are you sure you want to logout?')) {
-                    // Add actual logout logic here
-                    alert('Logged out successfully');
-                    // Redirect to login page or perform other logout actions
-                    // window.location.href = '/login';
-                }
-            };
+      links.forEach((link) => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = link.href;
+        a.textContent = link.name;
+        if (link.name === "Data Anggota" || link.name === "Home") {
+          a.classList.add("active");
         }
+        a.onclick = function (e) {
+          document
+            .querySelectorAll(".nav-links a")
+            .forEach((el) => el.classList.remove("active"));
+          this.classList.add("active");
+        };
+        li.appendChild(a);
+        navLinks.appendChild(li);
+      });
+
+      if (!isAdmin) {
+        logoutBtn.style.display = "none";
+      } else {
+        logoutBtn.onclick = function (e) {
+          e.preventDefault();
+          if (confirm("Are you sure you want to logout?")) {
+            // Add actual logout logic here
+            alert("Logged out successfully");
+            // Redirect to login page or perform other logout actions
+            // window.location.href = '/login';
+          }
+        };
+      }
     </script>
-</body>
+  </body>
 </html>
