@@ -87,7 +87,7 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        background-color: #ff6e5a;
+        background-color: #f44336;
         color: white;
       }
       .btn:hover {
@@ -120,6 +120,13 @@
           padding: 20px;
         }
       }
+      .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: -10px;
+        margin-bottom: 15px;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -148,6 +155,9 @@
               placeholder="Password"
               required
             />
+            {% if error %}
+            <p class="error-message">{{ error }}</p>
+            {% endif %}
             <div class="btn-container">
               <button type="submit" class="btn">Login</button>
             </div>

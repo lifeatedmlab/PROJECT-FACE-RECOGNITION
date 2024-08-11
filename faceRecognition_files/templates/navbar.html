@@ -59,7 +59,7 @@
       }
       .logout-btn,
       .login-btn {
-        background-color: #4d3682;
+        background-color: #200463;
         color: white;
         padding: 0.5rem 1rem;
         border-radius: 5px;
@@ -86,6 +86,16 @@
           margin-left: 0;
         }
       }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 999; /* Overlay berada di depan elemen lainnya */
+      }
       .model {
         display: none;
         position: fixed;
@@ -96,7 +106,7 @@
         height: 100%;
         overflow: auto;
         background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 200px;
+        padding-top: 270px;
         justify-content: center;
         align-items: center;
       }
@@ -135,7 +145,7 @@
         color: white;
       }
       .btn-primary {
-        background-color: #ff6e5a;
+        background-color: #f44336;
         color: white;
       }
       .notif {
@@ -145,20 +155,22 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background-color: #fefefe;
-        border: 2px solid #200463;
+        /* border: 2px solid #200463; */
         border-radius: 5px;
         padding: 10px;
         text-align: center;
         width: 80%;
         max-width: 400px;
+        z-index: 1000;
       }
       .notif.success {
-        border-color: #4caf50;
-        color: black;
+        color: green;
+        font-size: 16px;
+        margin: 20px 0;
       }
       .notif.error {
-        border-color: #f44336;
-        color: black;
+        color: #f44336;
+        font-size: 16px;
       }
     </style>
   </head>
@@ -174,7 +186,7 @@
       <div class="nav-container">
         <ul class="nav-links" id="navLinks"></ul>
         <a id="loginBtn" class="login-btn" href="{{ url_for('login') }}"
-          >Login</a
+          >Login Admin</a
         >
         <a id="logoutBtn" class="logout-btn" href="{{ url_for('logout') }}"
           >Logout</a
@@ -279,18 +291,40 @@
               }
           }
 
-          function shownotif(message, isSuccess) {
-             // Hapus notifikasi lama
-              notif.textContent = '';
-              notif.style.display = 'none';
+          // function shownotif(message, isSuccess) {
+          //   const overlay = document.createElement("div");
+          //   overlay.className = "overlay";
+          //   documnet.body.appendChild(overlay);
+          //   overlay.style.display = "block";
+          //    // Hapus notifikasi lama
+          //     // notif.textContent = '';
+          //     // notif.style.display = 'none';
 
-              notif.textContent = message;
-              notif.className = isSuccess ? 'notification success' : 'notification error';
-              notif.style.display ='block';
-              setTimeout(() => {
-                  notif.style.display = 'none';
-              }, 3000);
-          }
+          //   notif.textContent = message;
+          //   notif.className = isSuccess ? 'notification success' : 'notification error';
+          //   notif.style.display ='block';
+          //   setTimeout(() => {
+          //       notif.style.display = 'none';
+          //       overlay.style.display = "none";
+          //       document.body.removeChild(overlay);
+          //   }, 3000);
+          // }
+          function shownotif(message, isSuccess) {
+            const overlay = document.createElement("div");
+            overlay.className = "overlay";
+            document.body.appendChild(overlay); // Perbaiki kesalahan penulisan "documnet" menjadi "document"
+            overlay.style.display = "block";
+
+            notif.textContent = message;
+            notif.className = isSuccess ? 'notif success' : 'notif error';
+            notif.style.display = 'block';
+
+            setTimeout(() => {
+                notif.style.display = 'none';
+                overlay.style.display = "none";
+                document.body.removeChild(overlay);
+            }, 3000);
+        }
       }
 
       logoImg.onclick = function() {
