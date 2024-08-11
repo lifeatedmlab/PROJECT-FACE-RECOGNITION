@@ -19,18 +19,18 @@
         padding: 2rem;
         max-width: 1200px;
         margin: 0 auto;
+        text-align: center;
       }
       h1 {
         color: #200463;
-        text-align: center;
         font-size: 40px;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
       }
       h2 {
         color: #200463;
-        text-align: center;
         font-size: 24px;
         font-weight: 300; /* Medium weight */
+        margin-bottom: 2rem;
       }
       .table-container {
         background-color: #fff;
@@ -78,18 +78,43 @@
         table {
           font-size: 0.8rem;
         }
+        h1 {
+          font-size: 32px;
+        }
+        h2 {
+          font-size: 20px;
+        }
       }
       .custom-btn {
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .alur-registrasi {
+        background-color: white;
+        border-radius: 20px;
+        padding-right: 15px;
+        padding-left: 15px;
+        padding-top: 4px;
+        padding-bottom: 14px;
+        margin-top: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      #AlurRegistrasiImg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
     </style>
   </head>
   <body>
@@ -113,6 +138,14 @@
               Klik 'Registrasi' untuk registrasi wajah atau ‘Absensi’ untuk melakukan
               absensi
             </h2>
+            <h2 class="title-alur"></h2>
+            <div class="alur-registrasi">
+              <img
+                src="{{ url_for('static', filename='img/Alur Registrasi Anggota.png') }}"
+                alt="AlurRegistrasi"
+                id="AlurRegistrasiImg"
+              />
+            </div>
             <div class="table-container">
             </div>
         </div>
