@@ -433,4 +433,4 @@ def delete_data_event(eventID):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    socketio.run(app, host='127.0.0.1', port=5000, debug=True)
+    socketio.run(app, host='127.0.0.1', port=5000, debug=True, allow_unsafe_werkzeug=True)

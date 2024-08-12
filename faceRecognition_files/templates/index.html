@@ -96,24 +96,32 @@
         cursor: pointer;
         border-radius: 5px;
       }
-      .alur-registrasi {
+      .alur-registrasi,
+      .alur-absensi {
         background-color: white;
         border-radius: 20px;
-        padding-right: 15px;
-        padding-left: 15px;
-        padding-top: 4px;
-        padding-bottom: 14px;
-        margin-top: 2rem;
+        padding: 15px;
+        margin-top: 15px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        max-width: 80%;
+        max-width: 100%; 
         margin-left: auto;
         margin-right: auto;
+        flex: 1;
       }
-      #AlurRegistrasiImg {
-        max-width: 100%;
+      #AlurRegistrasiImg,
+      #AlurAbsensiImg {
+        max-width: 80vh;
+        width: auto;
         height: auto;
-        display: block;
+        display: inline-block;
         margin: 0 auto;
+      }
+      .alur-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 4rem;
+        margin-top: 2rem;
       }
     </style>
   </head>
@@ -138,13 +146,21 @@
               Klik 'Registrasi' untuk registrasi wajah atau ‘Absensi’ untuk melakukan
               absensi
             </h2>
-            <h2 class="title-alur"></h2>
-            <div class="alur-registrasi">
-              <img
-                src="{{ url_for('static', filename='img/Alur Registrasi Anggota.png') }}"
-                alt="AlurRegistrasi"
-                id="AlurRegistrasiImg"
-              />
+            <div class="alur-container">
+              <div class="alur-registrasi">
+                <img
+                  src="{{ url_for('static', filename='img/Alur Registrasi Anggota.png') }}"
+                  alt="AlurRegistrasi"
+                  id="AlurRegistrasiImg"
+                />
+              </div>
+              <div class="alur-absensi">
+                <img
+                  src="{{ url_for('static', filename='img/Alur Absensi Anggota.png') }}"
+                  alt="AlurAbsensi"
+                  id="AlurAbsensiImg"
+                />
+              </div>
             </div>
             <div class="table-container">
             </div>
