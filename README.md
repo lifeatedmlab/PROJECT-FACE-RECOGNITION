@@ -4,17 +4,21 @@
 Proyek ini adalah aplikasi pengenalan wajah yang dibangun menggunakan Flask dan OpenCV. Aplikasi ini memungkinkan pengguna untuk mengenali wajah dalam gambar atau video menggunakan model yang telah dilatih.
 
 ## Struktur Proyek
-
-
+- `requirements.txt`: File yang berisi library yang harus diinstal sebelum menjalankan project.
 - `faceRecognition_files`: Directory yang berisi file-file dan folder utama project, berikut isinya:
   - `app.py`: File utama untuk menjalankan aplikasi Flask.
   - `database.py`: Mengelola koneksi dan operasi database.
   - `dataset.py`: Mengumpulkan data wajah.
   - `face_recognition.py`: Modul untuk pengenalan wajah.
   - `train_classifier.py`: Melatih model pengenalan wajah.
-  - `static/`: Direktori untuk file statis seperti CSS, JavaScript, dan gambar.
-  - `templates/`: Direktori untuk template HTML.
+  - `absensi.py`: Berisi fungsi untuk memasukkan data absen ke database dan mengecek apakah sudah ada data absen pada database.
+  - `addevent.py`: Berisi fungsi untuk menambah data event ke database, mengecek apakah sudah ada data event pada database, dan generate event_id otomatis.
+  - `addperson.py`: Berisi fungsi untuk menambah data anggota ke database dan mengecek apakah sudah ada data anggota pada database.
+  - `login.py`: Berisi fungsi untuk login sebagai admin.
+  - `static/`: Direktori untuk file statis seperti CSS, JavaScript, dan Image.
+  - `templates/`: Direktori untuk template HTML (page).
   - `faceRecognition_files/resources/haarcascade_frontalface_default.xml`: File Haarcascade untuk deteksi wajah.
+  - `faceRecognition_files/classifier_XYZ`: File XML hasil training setiap wajah anggota.
 
 
 ## Konfigurasi Database
