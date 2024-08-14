@@ -419,18 +419,6 @@ def delete_data_event(eventID):
         mydb.rollback()
         return jsonify({'success': False, 'message': str(e)})
 
-# @app.route('/editEvent/<eventID>')
-# def editEvent(eventID):
-#     delete_dataset(eventID)
-#     mycursor.execute("SELECT eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara FROM eventmstr WHERE eventID = %s", (eventID,))
-#     event_data = mycursor.fetchone()
-    
-#     if event_data:
-#         eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara = event_data
-#     else:
-#         eventID, kodeAcara, kodeAdmin, namaEvent, waktuAcara = '', '', '', '', ''
-#     return redirect(url_for('data_event', eventID=eventID, kodeAdmin=kodeAdmin, namaEvent=namaEvent, waktuAcara=waktuAcara))
-
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     socketio.run(app, host='127.0.0.1', port=5000, debug=True, allow_unsafe_werkzeug=True)

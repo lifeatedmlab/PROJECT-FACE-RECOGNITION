@@ -26,14 +26,14 @@
       .logo img {
         height: 50px;
         margin-left: 15px;
-        cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+        cursor: pointer; 
       }
       .nav-container {
         display: flex;
         align-items: center;
         flex-grow: 1;
         justify-content: space-between;
-        flex-wrap: wrap; /* Allow items to wrap */
+        flex-wrap: wrap; 
       }
       .nav-links {
         display: flex;
@@ -45,7 +45,7 @@
         flex-grow: 1;
       }
       .nav-links li {
-        margin: 0 1rem; /* Adjusted margin for smaller spacing */
+        margin: 0 1rem; 
       }
       .nav-links a {
         text-decoration: none;
@@ -94,7 +94,7 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.4);
-        z-index: 999; /* Overlay berada di depan elemen lainnya */
+        z-index: 999; 
       }
       .model {
         display: none;
@@ -155,7 +155,6 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background-color: #fefefe;
-        /* border: 2px solid #200463; */
         border-radius: 5px;
         padding: 10px;
         text-align: center;
@@ -267,15 +266,12 @@
 
               confirmLogoutBtn.onclick = function() {
                   logoutmodel.style.display = 'none';
-                  // Simulasikan logout
                   simulateLogout(true);
-                  // Tambahkan delay 3 detik sebelum berpindah halaman
                   setTimeout(function() {
                       window.location.href = '/logout';
                   }, 3000);
               }
           };
-          // Close the model if the user clicks anywhere outside of it
           window.onclick = function(event) {
               if (event.target == logoutmodel) {
                   logoutmodel.style.display = "none";
@@ -290,29 +286,10 @@
                   shownotif('Failed to Logout', false);
               }
           }
-
-          // function shownotif(message, isSuccess) {
-          //   const overlay = document.createElement("div");
-          //   overlay.className = "overlay";
-          //   documnet.body.appendChild(overlay);
-          //   overlay.style.display = "block";
-          //    // Hapus notifikasi lama
-          //     // notif.textContent = '';
-          //     // notif.style.display = 'none';
-
-          //   notif.textContent = message;
-          //   notif.className = isSuccess ? 'notification success' : 'notification error';
-          //   notif.style.display ='block';
-          //   setTimeout(() => {
-          //       notif.style.display = 'none';
-          //       overlay.style.display = "none";
-          //       document.body.removeChild(overlay);
-          //   }, 3000);
-          // }
           function shownotif(message, isSuccess) {
             const overlay = document.createElement("div");
             overlay.className = "overlay";
-            document.body.appendChild(overlay); // Perbaiki kesalahan penulisan "documnet" menjadi "document"
+            document.body.appendChild(overlay); 
             overlay.style.display = "block";
 
             notif.textContent = message;
