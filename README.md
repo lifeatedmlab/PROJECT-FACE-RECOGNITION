@@ -47,7 +47,7 @@ Gunakan informasi berikut untuk menghubungkan Cloud:
 ## Error handling while running
 1. **Error pada Koneksi Database**
 Jika aplikasi tidak bisa terhubung ke database, Anda mungkin melihat pesan error seperti "Can't connect to MySQL server" atau "Access denied for user" atau "Time Out" 
-***Solusi***
+### Solusi:
 - **Periksa Koneksi Database**: Pastikan detail koneksi database (host, user, password, database) sudah benar dan database MySQL berjalan dengan baik.
 - **Periksa Port:** Pastikan port MySQL (3306 secara default) tidak diblokir oleh firewall atau sudah diatur dengan benar.
 - **Uji Koneksi Secara Manual**: Anda bisa mencoba menghubungkan ke database secara manual menggunakan alat seperti MySQL CLI atau phpMyAdmin untuk memastikan semuanya berfungsi dengan baik.
@@ -56,14 +56,14 @@ Jika aplikasi tidak bisa terhubung ke database, Anda mungkin melihat pesan error
 
 2. **Error Importing Library**
 Jika ada error yang terkait dengan modul atau pustaka yang tidak ditemukan, seperti "ModuleNotFoundError" atau lainnya
-***Solusi***
+### Solusi:
 - **Pastikan Dependensi Terinstal**: Jalankan kembali perintah berikut untuk memastikan semua dependensi terinstal dengan benar
 - **Cek Versi Python**: Pastikan Anda menggunakan versi Python yang kompatibel (disarankan Python 3.8 atau lebih baru) bisa install ulang dengan menyalahkan environtmentnya.
 - **Lingkungan Virtual**: Jika Anda menggunakan lingkungan virtual (venv), pastikan sudah diaktifkan sebelum menjalankan aplikasi.
 
 3. **Error pada Cloudflare R2 (S3 Compatible)**
 Error yang terkait dengan koneksi ke Cloudflare R2, seperti "Access Denied" atau "Endpoint URL not found"
-***Solusi***
+### Solusi:
 - **Periksa Kredensial**: Pastikan aws_access_key_id dan aws_secret_access_key sudah benar dan memiliki izin yang diperlukan.
 - **Periksa Endpoint URL**: Verifikasi bahwa endpoint_url sudah benar dan dapat diakses dari jaringan Anda.
 - **Restart Aplikasi**: Coba hentikan dan jalankan ulang aplikasi. Terkadang, ini bisa menyelesaikan masalah sementara.
