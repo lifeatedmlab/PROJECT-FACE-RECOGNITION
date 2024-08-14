@@ -7,3 +7,5 @@ numpy
 boto3
 jsonify
 flask_socketio
+pytz
+openpyxl

@@ -5,7 +5,7 @@ from dataset import generate_dataset, delete_dataset, dbdataset, count_images
 from face_recognition import process_camera_stream
 from addperson import add_person, kodeAnggota_exists
 from train_classifier import train_classifier
-from addevent import add_event, namaEvent_exists, generate_event_id
+from addevent import add_event, namaEvent_exists
 import os
 import logging
 from enum import Enum
@@ -18,7 +18,6 @@ import boto3
 import pandas as pd
 from flask import send_file
 import io
-
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -76,15 +75,14 @@ def login():
         mycursor.execute("SELECT * FROM adminmstr WHERE username = %s AND password = %s", (username, password))
         account = mycursor.fetchone()
         if account:
-            user = User(account[0], account[2])  # Assuming the 'is_admin' flag is at index 2
+            user = User(account[0], account[2])
             login_user(user)
-            session['kode_admin'] = account[0]  # Simpan kode admin ke dalam session
+            session['kode_admin'] = account[0]
             return redirect(url_for('dataanggota'))
         else:
             error = 'Invalid username or password'
     return render_template('login.html', error=error)
         
-
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
@@ -157,7 +155,6 @@ def retry_dataset(kodeAnggota):
         session.pop('gen', None)
     return redirect(url_for('vfdataset_page', kodeAnggota=kodeAnggota, nama=nama, nim=nim, gen=gen))
 
-
 @app.route('/vidfeed_dataset/<kodeAnggota>')
 def vidfeed_dataset(kodeAnggota):
     return Response(generate_dataset(kodeAnggota), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -198,7 +195,6 @@ def train_classifier_route(kodeAnggota):
             session.pop('nim')
             session.pop('gen')
         return train_classifier(kodeAnggota)
-    
 
 @app.route('/event')
 @login_required
@@ -319,8 +315,6 @@ def get_absensi():
         })
 
     return jsonify({'status': 'success', 'data': absensi_data}), 200
-
-
 
 @app.route('/download_absensi_xlsx', methods=['GET'])
 @login_required
